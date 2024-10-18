@@ -1,4 +1,4 @@
-package com.example.papalote.ui.theme.pages
+package com.example.papalote
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -13,12 +13,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.papalote.R
 
 // Asegúrate de que el paquete coincida con tu proyecto
 
 @Composable
-fun HomeScreen(onLoginClicked: () -> Unit, onRegisterClicked: () -> Unit) {
+fun WelcomeScreen(onLoginClicked: () -> Unit, onRegisterClicked: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -67,6 +66,6 @@ fun HomeScreen(onLoginClicked: () -> Unit, onRegisterClicked: () -> Unit) {
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewHomeScreen() {
-    HomeScreen(onLoginClicked = {}, onRegisterClicked = {})
+fun PreviewWelcomeScreen() {
+    WelcomeScreen(onLoginClicked = {}, onRegisterClicked = {})
 }
