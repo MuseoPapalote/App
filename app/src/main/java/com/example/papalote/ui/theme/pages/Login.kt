@@ -6,7 +6,6 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.foundation.background
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,8 +14,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.papalote.R
-// Asegúrate de que el paquete coincida con tu proyecto
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.papalote.ui.theme.PapaloteTheme
 
 @Composable
 fun LoginScreen(onLoginClick: () -> Unit) {
@@ -40,8 +39,7 @@ fun LoginScreen(onLoginClick: () -> Unit) {
                 text = "Bienvenid@!",
                 color = Color(0xFFC1D72F),
                 fontSize = 24.sp,
-                modifier = Modifier
-                    .padding(bottom = 20.dp)
+                modifier = Modifier.padding(bottom = 20.dp)
             )
 
             // Campo de Usuario
@@ -50,7 +48,6 @@ fun LoginScreen(onLoginClick: () -> Unit) {
                 onValueChange = { username = it },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(12.dp)
                     .background(Color.White)
                     .padding(12.dp),
                 decorationBox = { innerTextField ->
@@ -66,7 +63,6 @@ fun LoginScreen(onLoginClick: () -> Unit) {
                 onValueChange = { password = it },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(12.dp)
                     .background(Color.White)
                     .padding(12.dp),
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -80,12 +76,19 @@ fun LoginScreen(onLoginClick: () -> Unit) {
             // Botón de Iniciar Sesión
             Button(
                 onClick = { onLoginClick() },
-                modifier = Modifier
-                    .wrapContentSize(),
+                modifier = Modifier.wrapContentSize(),
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFC1D72F))
             ) {
                 Text(text = "Inicia Sesión", color = Color.White)
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun LoginScreenPreview() {
+    PapaloteTheme {
+        LoginScreen(onLoginClick = {})
     }
 }

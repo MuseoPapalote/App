@@ -13,6 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.papalote.ui.theme.PapaloteTheme
 
+
+import com.example.papalote.ui.theme.pages.LoginScreen
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,28 +23,15 @@ class MainActivity : ComponentActivity() {
         setContent {
             PapaloteTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
+                    // Llama a LoginScreen en lugar de Greeting
+                    LoginScreen(
+                        onLoginClick = {
+                            // Acción al hacer clic en "Iniciar Sesión"
+                            // Aquí podrías implementar la navegación o lógica adicional
+                        }
                     )
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    PapaloteTheme {
-        Greeting("Android")
     }
 }
