@@ -12,7 +12,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.papalote.R // Asegúrate de que el recurso esté disponible
 import com.example.papalote.ui.theme.PapaloteTheme
@@ -32,7 +31,7 @@ fun WelcomeScreen(onLoginClicked: () -> Unit, onRegisterClicked: () -> Unit) {
         ) {
             // Logo
             Image(
-                painter = painterResource(id = R.drawable.papalotelogo), // Asegúrate de que papalotelogo existe en res/drawable
+                painter = painterResource(id = R.drawable.papalotelogoo), // Asegúrate de que papalotelogo existe en res/drawable
                 contentDescription = "Logo",
                 modifier = Modifier
                     .size(200.dp)
