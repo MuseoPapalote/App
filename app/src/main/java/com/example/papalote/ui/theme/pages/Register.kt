@@ -20,6 +20,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.papalote.ui.theme.PapaloteTheme
 import com.example.papalote.R // Asegúrate de que el paquete coincida con tu proyecto
 
 @Composable
@@ -130,5 +132,13 @@ fun RegisterScreen(onBack: () -> Unit) {
                 )
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun RegisterScreenPreview() {
+    PapaloteTheme {
+        RegisterScreen(onBack = {})
     }
 }

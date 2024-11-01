@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.papalote.ui.theme.PapaloteTheme
 
 @Composable
-fun LoginScreen(onLoginClick: () -> Unit) {
+fun LoginScreen(onLoginClick: () -> Unit, onBack: () -> Unit) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
@@ -81,6 +81,17 @@ fun LoginScreen(onLoginClick: () -> Unit) {
             ) {
                 Text(text = "Inicia Sesión", color = Color.White)
             }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Botón de Volver
+            Button(
+                onClick = onBack,
+                modifier = Modifier.wrapContentSize(),
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray)
+            ) {
+                Text(text = "Volver", color = Color.White)
+            }
         }
     }
 }
@@ -89,6 +100,6 @@ fun LoginScreen(onLoginClick: () -> Unit) {
 @Composable
 fun LoginScreenPreview() {
     PapaloteTheme {
-        LoginScreen(onLoginClick = {})
+        LoginScreen(onLoginClick = {}, onBack = {})
     }
 }
