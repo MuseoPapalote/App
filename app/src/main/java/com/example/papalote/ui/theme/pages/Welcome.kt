@@ -1,19 +1,22 @@
-package com.example.papalote.ui.theme.pages // Asegúrate de que el paquete sea correcto
+package com.example.papalote.ui.theme.pages
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.papalote.R // Asegúrate de que el recurso esté disponible
+import com.example.papalote.R
 import com.example.papalote.ui.theme.PapaloteTheme
 
 @Composable
@@ -22,7 +25,7 @@ fun WelcomeScreen(onLoginClicked: () -> Unit, onRegisterClicked: () -> Unit) {
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .background(Color(0xFF8E24AA)), // Fondo de color hexadecimal
+            .background(Color(0xFFD8E56D)), // Fondo verde claro
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -31,7 +34,7 @@ fun WelcomeScreen(onLoginClicked: () -> Unit, onRegisterClicked: () -> Unit) {
         ) {
             // Logo
             Image(
-                painter = painterResource(id = R.drawable.papalotelogoo), // Asegúrate de que papalotelogo existe en res/drawable
+                painter = painterResource(id = R.drawable.papalotelogoo),
                 contentDescription = "Logo",
                 modifier = Modifier
                     .size(200.dp)
@@ -42,22 +45,49 @@ fun WelcomeScreen(onLoginClicked: () -> Unit, onRegisterClicked: () -> Unit) {
             Spacer(modifier = Modifier.height(50.dp))
 
             // Botón de Iniciar Sesión
-            Button(
-                onClick = onLoginClicked,
-                modifier = Modifier.wrapContentSize()
-            ) {
-                Text(text = "Iniciar Sesión", color = Color.White)
-            }
+            GradientButton(
+                text = "Iniciar Sesión",
+                onClick = onLoginClicked
+            )
 
             Spacer(modifier = Modifier.height(20.dp))
 
             // Botón de Registrarse
-            Button(
-                onClick = onRegisterClicked,
-                modifier = Modifier.wrapContentSize()
-            ) {
-                Text(text = "Registrarse", color = Color.White)
-            }
+            GradientButton(
+                text = "Registrarse",
+                onClick = onRegisterClicked
+            )
+        }
+    }
+}
+
+@Composable
+fun GradientButton(text: String, onClick: () -> Unit) {
+    androidx.compose.material.Button(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 32.dp)
+            .height(48.dp),
+        contentPadding = PaddingValues()
+    ) {
+        Box(
+            modifier = Modifier
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(Color(0xFFA4CD39), Color(0xFFC1D72F))
+                    ),
+                    shape = CircleShape
+                )
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = text,
+                color = Color.White,
+                fontSize = 16.sp
+            )
         }
     }
 }

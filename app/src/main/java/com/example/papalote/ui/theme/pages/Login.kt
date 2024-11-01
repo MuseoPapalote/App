@@ -150,6 +150,17 @@ fun LoginScreen(onLoginClick: () -> Unit, onBack: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // Botón de "Volver"
+                Button(
+                    onClick = { onBack() },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray),
+                    modifier = Modifier.wrapContentSize()
+                ) {
+                    Text(text = "Volver", color = Color.White)
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
                 Text(
                     text = "¿Olvidaste tu contraseña?",
                     color = Color(0xFF707070),
