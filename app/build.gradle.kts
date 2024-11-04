@@ -51,7 +51,13 @@ android {
 
 dependencies {
     // Añadir esta línea para tener acceso a Button y Text
-    implementation("androidx.compose.material:material:1.5.1")
+    //implementation("androidx.compose.material:material:1.5.1")
+    //implementation(libs.androidx.datastore.preferences.v100)
+    //implementation(libs.hilt.android)
+    //implementation(libs.androidx.material)
+    //implementation(libs.androidx.datastore.preferences)
+    implementation (libs.jbcrypt)
+    implementation (libs.androidx.security.crypto)
 
     // Dependencias existentes
     implementation(libs.androidx.core.ktx)

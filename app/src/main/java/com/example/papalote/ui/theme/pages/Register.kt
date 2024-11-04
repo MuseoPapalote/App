@@ -20,6 +20,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.papalote.R
 import androidx.compose.ui.tooling.preview.Preview
+import java.security.MessageDigest
+import kotlin.text.Charsets.UTF_8
+
+fun hashPassword(password: String): String {
+    val bytes = password.toByteArray(UTF_8)
+    val md = MessageDigest.getInstance("SHA-256")
+    val digest = md.digest(bytes)
+    return digest.fold("") { str, it -> str + "%02x".format(it) }
+}
 
 @Composable
 fun RegisterScreen(onBack: () -> Unit) {
@@ -29,10 +38,69 @@ fun RegisterScreen(onBack: () -> Unit) {
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
+    var hashedPassword by remember { mutableStateOf("") }
+    var showHashDialog by remember { mutableStateOf(false) }
+
+    // Error states
+    var showError by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
+
+    // Validation function
+    fun validateFields(): Boolean {
+        return when {
+            fullName.isBlank() -> {
+                errorMessage = "Por favor ingrese su nombre completo"
+                false
+            }
+            birthDate.isBlank() -> {
+                errorMessage = "Por favor ingrese su fecha de nacimiento"
+                false
+            }
+            username.isBlank() -> {
+                errorMessage = "Por favor ingrese un nombre de usuario"
+                false
+            }
+            password.isBlank() -> {
+                errorMessage = "Por favor ingrese una contraseña"
+                false
+            }
+            password.length < 8 -> {
+                errorMessage = "La contraseña debe tener al menos 8 caracteres"
+                false
+            }
+            else -> true
+        }
+    }
+    @Composable
+    fun PasswordStrengthIndicator(password: String) {
+        if (password.isNotEmpty()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp, vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = when {
+                        password.length < 8 -> "Contraseña muy corta"
+                        password.length >= 8 -> "Contraseña válida"
+                        else -> ""
+                    },
+                    color = when {
+                        password.length < 8 -> Color.Red
+                        password.length >= 8 -> Color(0xFF4CAF50)
+                        else -> Color.Transparent
+                    },
+                    fontSize = 12.sp
+                )
+            }
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFD8E56D)), // Fondo verde claro
+            .background(Color(0xFFD8E56D)),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -42,7 +110,7 @@ fun RegisterScreen(onBack: () -> Unit) {
                 .fillMaxHeight()
                 .padding(vertical = 16.dp)
         ) {
-            // Parte superior: Logo y título
+            // Logo and title
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -63,14 +131,17 @@ fun RegisterScreen(onBack: () -> Unit) {
                 )
             }
 
-            // Campos de entrada
+            // Input fields
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 InputFieldWithIcon(
                     value = fullName,
-                    onValueChange = { fullName = it },
+                    onValueChange = {
+                        fullName = it
+                        showError = false
+                    },
                     placeholder = "Nombre completo",
                     icon = R.drawable.user_icon
                 )
@@ -78,7 +149,10 @@ fun RegisterScreen(onBack: () -> Unit) {
 
                 InputFieldWithIcon(
                     value = birthDate,
-                    onValueChange = { birthDate = it },
+                    onValueChange = {
+                        birthDate = it
+                        showError = false
+                    },
                     placeholder = "Fecha de nacimiento",
                     icon = R.drawable.birthday_icon
                 )
@@ -86,7 +160,10 @@ fun RegisterScreen(onBack: () -> Unit) {
 
                 InputFieldWithIcon(
                     value = username,
-                    onValueChange = { username = it },
+                    onValueChange = {
+                        username = it
+                        showError = false
+                    },
                     placeholder = "Usuario",
                     icon = R.drawable.user_icon
                 )
@@ -94,20 +171,41 @@ fun RegisterScreen(onBack: () -> Unit) {
 
                 InputFieldWithIcon(
                     value = password,
-                    onValueChange = { password = it },
+                    onValueChange = {
+                        password = it
+                        showError = false
+                    },
                     placeholder = "Contraseña",
                     icon = R.drawable.lock_icon,
                     isPassword = true,
                     passwordVisible = passwordVisible,
                     onPasswordToggle = { passwordVisible = !passwordVisible }
                 )
+
+                // Error message
+                if (showError) {
+                    Text(
+                        text = errorMessage,
+                        color = Color.Red,
+                        fontSize = 14.sp,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Botón de "REGISTRARME" con gradiente
+            // Register button
             Button(
-                onClick = { /* Lógica de registro */ },
+                onClick = {
+                    if (validateFields()) {
+                        hashedPassword = hashPassword(password)
+                        showHashDialog = true
+                        showError = false
+                    } else {
+                        showError = true
+                    }
+                },
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                 modifier = Modifier
                     .padding(horizontal = 32.dp)
@@ -135,9 +233,28 @@ fun RegisterScreen(onBack: () -> Unit) {
                 }
             }
 
+            if (showHashDialog) {
+                AlertDialog(
+                    onDismissRequest = { showHashDialog = false },
+                    title = { Text("Hash de la contraseña") },
+                    text = {
+                        Column {
+                            Text("Contraseña original: $password")
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text("Hash SHA-256: $hashedPassword")
+                        }
+                    },
+                    confirmButton = {
+                        TextButton(onClick = { showHashDialog = false }) {
+                            Text("Cerrar")
+                        }
+                    }
+                )
+            }
+
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Botón de "Volver"
+            // Back button
             Button(
                 onClick = { onBack() },
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray),
@@ -148,7 +265,7 @@ fun RegisterScreen(onBack: () -> Unit) {
                 Text(text = "Volver", color = Color.White)
             }
 
-            // Texto de "O regístrate con"
+            // Social login section
             Text(
                 text = "O regístrate con",
                 color = Color(0xFF707070),
@@ -156,7 +273,6 @@ fun RegisterScreen(onBack: () -> Unit) {
                 modifier = Modifier.padding(bottom = 10.dp)
             )
 
-            // Iconos de redes sociales
             Row(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxWidth()
@@ -179,7 +295,7 @@ fun RegisterScreen(onBack: () -> Unit) {
                 )
             }
 
-            // Banderas de idioma
+            // Language flags
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
