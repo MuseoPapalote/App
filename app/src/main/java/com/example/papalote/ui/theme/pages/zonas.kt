@@ -12,6 +12,9 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -75,7 +78,7 @@ fun ZonasScreen(onZoneClick: (String) -> Unit, onBack: () -> Unit){
             ) {
                 Text(text = "Volver", color = Color.White)
             }
-
+            BottomNavigationMenu()
         }
     }
 }
@@ -106,5 +109,24 @@ fun ZoneItem(name: String, icon: Int, onClick: () -> Unit) {
     ) {
         Image(painter = painterResource(id = icon), contentDescription = null)
         Text(text = name)
+    }
+}
+
+@Composable
+fun BottomNavigationMenu(){
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color(0xFFB8C94A)),
+        horizontalArrangement = Arrangement.SpaceAround,
+        verticalAlignment = Alignment.CenterVertically
+    ){
+        IconButton(onClick = {/*Acción para Home*/}) {
+            Icon(Icons.Default.Home, contentDescription = "Home", tint = Color.White)
+        }
+        IconButton(onClick = {/*Acción para camara*/}) {
+            Icon(Icons.Default.Search, contentDescription = "Camera", tint = Color.White)
+        }
+
     }
 }
