@@ -15,7 +15,8 @@ import com.example.papalote.ui.theme.PapaloteTheme
 import com.example.papalote.ui.theme.pages.WelcomeScreen
 import com.example.papalote.ui.theme.pages.LoginScreen
 import com.example.papalote.ui.theme.pages.RegisterScreen
-
+import com.example.papalote.ui.theme.pages.ZonasScreen
+import com.example.papalote.ui.theme.pages.ZoneDetailScreen
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +46,7 @@ fun AppNavigation(navController: NavHostController) {
             LoginScreen(
                 onLoginClick = {
                     // Aquí puedes definir la acción para iniciar sesión.
+                    navController.navigate("zones") // Navegar a Zonas después de iniciar sesión
                     // Por ahora, puede estar vacío o puedes navegar a otra pantalla si es necesario
                 },
                 onBack = { navController.navigateUp() } // Navega hacia atrás
@@ -55,6 +57,21 @@ fun AppNavigation(navController: NavHostController) {
             RegisterScreen(
                 onBack = { navController.navigateUp() } // Navega hacia atrás
             )
+        }
+
+        // Pantalla de Zonas
+        composable("zones") {
+            ZonasScreen(
+                onZoneClick = { zoneName ->
+                    navController.navigate("zoneDetail/$zoneName") // Navegar a la pantalla de detalle de la zona
+                },
+                onBack = { navController.navigateUp() }
+            )
+        }
+        // Pantalla de Detalle de Zona
+        composable("zoneDetail/{zoneName}") { backStackEntry ->
+            val zoneName = backStackEntry.arguments?.getString("zoneName") ?: "Zona Desconocida"
+            ZoneDetailScreen(zoneName = zoneName, onBack = { navController.navigateUp() })
         }
     }
 }
