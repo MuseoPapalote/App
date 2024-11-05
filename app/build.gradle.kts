@@ -58,6 +58,10 @@ dependencies {
     //implementation(libs.androidx.datastore.preferences)
     implementation (libs.jbcrypt)
     implementation (libs.androidx.security.crypto)
+    implementation (libs.retrofit)
+    implementation (libs.converter.gson)
+    implementation (libs.kotlinx.coroutines.android)
+    implementation (libs.androidx.lifecycle.viewmodel.compose)
 
     // Dependencias existentes
     implementation(libs.androidx.core.ktx)

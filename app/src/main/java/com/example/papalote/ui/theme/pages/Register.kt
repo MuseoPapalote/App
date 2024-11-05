@@ -22,6 +22,18 @@ import com.example.papalote.R
 import androidx.compose.ui.tooling.preview.Preview
 import java.security.MessageDigest
 import kotlin.text.Charsets.UTF_8
+import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.papalote.RegistrationViewModel
+import com.example.papalote.RegistrationState
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.Calendar
+import android.app.DatePickerDialog
+import androidx.compose.ui.platform.LocalContext
+
+
 
 fun hashPassword(password: String): String {
     val bytes = password.toByteArray(UTF_8)
@@ -31,28 +43,60 @@ fun hashPassword(password: String): String {
 }
 
 @Composable
-fun RegisterScreen(onBack: () -> Unit) {
-    var fullName by remember { mutableStateOf("") }
-    var birthDate by remember { mutableStateOf("") }
+fun RegisterScreen(
+    viewModel: RegistrationViewModel = viewModel(),
+    onBack: () -> Unit
+) {
+    var email by remember { mutableStateOf("") }
+    //var birthDate by remember { mutableStateOf("") }
+    var birthDate by remember { mutableStateOf(Date()) }
+
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var hashedPass by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
-    var hashedPassword by remember { mutableStateOf("") }
+    val registrationState by viewModel.registrationState.collectAsState()
+    var showLoadingDialog by remember { mutableStateOf(false) }
     var showHashDialog by remember { mutableStateOf(false) }
-
-    // Error states
     var showError by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
 
-    // Validation function
+    val context = LocalContext.current // Obtén el contexto aquí
+    fun showDatePicker(onDateSelected: (Date) -> Unit) {
+        val calendar = Calendar.getInstance()
+        val datePickerDialog = DatePickerDialog(
+            context,
+            { _, year, month, dayOfMonth ->
+                val selectedDate = Calendar.getInstance().apply {
+                    set(year, month, dayOfMonth)
+                }.time
+                onDateSelected(selectedDate)
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+        datePickerDialog.show()
+    }
+
+    fun isValidEmail(email: String): Boolean {
+        val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$"
+        return email.matches(emailRegex.toRegex())
+    }
+
+    // Validation function updated for email
     fun validateFields(): Boolean {
         return when {
-            fullName.isBlank() -> {
-                errorMessage = "Por favor ingrese su nombre completo"
+            email.isBlank() -> {
+                errorMessage = "Por favor ingrese su correo electrónico"
                 false
             }
-            birthDate.isBlank() -> {
+            !isValidEmail(email) -> {
+                errorMessage = "Por favor ingrese un correo electrónico válido"
+                false
+            }
+            birthDate == null -> {
                 errorMessage = "Por favor ingrese su fecha de nacimiento"
                 false
             }
@@ -71,31 +115,26 @@ fun RegisterScreen(onBack: () -> Unit) {
             else -> true
         }
     }
-    @Composable
-    fun PasswordStrengthIndicator(password: String) {
-        if (password.isNotEmpty()) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 32.dp, vertical = 4.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = when {
-                        password.length < 8 -> "Contraseña muy corta"
-                        password.length >= 8 -> "Contraseña válida"
-                        else -> ""
-                    },
-                    color = when {
-                        password.length < 8 -> Color.Red
-                        password.length >= 8 -> Color(0xFF4CAF50)
-                        else -> Color.Transparent
-                    },
-                    fontSize = 12.sp
-                )
+
+    LaunchedEffect(registrationState) {
+        when (registrationState) {
+            is RegistrationState.Loading -> {
+                showLoadingDialog = true
+            }
+            is RegistrationState.Success -> {
+                showLoadingDialog = false
+            }
+            is RegistrationState.Error -> {
+                showLoadingDialog = false
+                showError = true
+                errorMessage = (registrationState as RegistrationState.Error).message
+            }
+            else -> {
+                showLoadingDialog = false
             }
         }
     }
+
 
     Box(
         modifier = Modifier
@@ -137,25 +176,35 @@ fun RegisterScreen(onBack: () -> Unit) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 InputFieldWithIcon(
-                    value = fullName,
-                    onValueChange = {
-                        fullName = it
+                    value=email,
+                    onValueChange={
+                        email = it
                         showError = false
                     },
-                    placeholder = "Nombre completo",
+                    placeholder = "Correo electrónico",
                     icon = R.drawable.user_icon
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
-                InputFieldWithIcon(
-                    value = birthDate,
-                    onValueChange = {
-                        birthDate = it
+                Button(onClick = {
+                    showDatePicker { selectedDate ->
+                        birthDate = selectedDate
                         showError = false
-                    },
-                    placeholder = "Fecha de nacimiento",
-                    icon = R.drawable.birthday_icon
-                )
+                    }
+                }, modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White, shape = CircleShape)
+                    .padding(horizontal = 8.dp, vertical = 2.dp)
+                ) {
+                    Text(
+                        text = if (birthDate != null) {
+                            SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(birthDate!!)
+                        } else {
+                            "Fecha de nacimiento"
+                        },
+                        color = if (birthDate != null) Color.Black else Color(0xFFFFFFFF) // Cambia el color según la selección
+                    )
+                }
                 Spacer(modifier = Modifier.height(16.dp))
 
                 InputFieldWithIcon(
@@ -182,7 +231,6 @@ fun RegisterScreen(onBack: () -> Unit) {
                     onPasswordToggle = { passwordVisible = !passwordVisible }
                 )
 
-                // Error message
                 if (showError) {
                     Text(
                         text = errorMessage,
@@ -199,7 +247,9 @@ fun RegisterScreen(onBack: () -> Unit) {
             Button(
                 onClick = {
                     if (validateFields()) {
-                        hashedPassword = hashPassword(password)
+                        hashedPass=hashPassword(password)
+                        viewModel.registerUser(email, birthDate, username, hashedPass)
+
                         showHashDialog = true
                         showError = false
                     } else {
@@ -241,7 +291,7 @@ fun RegisterScreen(onBack: () -> Unit) {
                         Column {
                             Text("Contraseña original: $password")
                             Spacer(modifier = Modifier.height(8.dp))
-                            Text("Hash SHA-256: $hashedPassword")
+                            Text("Hash SHA-256: $hashedPass")
                         }
                     },
                     confirmButton = {
