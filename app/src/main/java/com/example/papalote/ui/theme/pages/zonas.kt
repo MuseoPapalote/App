@@ -137,14 +137,14 @@ fun BottomNavigationMenu(){
     ){
         IconButton(onClick = {/*Acción para Home*/}) {
             Image(
-                painter = painterResource(id = R.drawable.home),
+                painter = painterResource(id = R.drawable.hoome),
                 contentDescription = "Home",
                 modifier = Modifier.size(48.dp)
             )
         }
         IconButton(onClick = {/*Acción para camara*/}) {
             Image(
-                painter = painterResource(id = R.drawable.qrsc),
+                painter = painterResource(id = R.drawable.qrs),
                 contentDescription = "Camara",
                 modifier = Modifier.size(48.dp)
 
