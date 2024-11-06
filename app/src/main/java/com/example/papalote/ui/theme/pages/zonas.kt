@@ -78,7 +78,13 @@ fun ZonasScreen(onZoneClick: (String) -> Unit, onBack: () -> Unit){
             ) {
                 Text(text = "Volver", color = Color.White)
             }
-            BottomNavigationMenu()
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+
+            ) {
+                BottomNavigationMenu()
+            }
         }
     }
 }
