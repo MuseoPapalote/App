@@ -4,7 +4,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-    private const val BASE_URL = "http://40.233.27.126:8080/"
+    private const val BASE_URL = "https://museoapi.org"
 
     private val retrofit: Retrofit by lazy {
         Retrofit.Builder()

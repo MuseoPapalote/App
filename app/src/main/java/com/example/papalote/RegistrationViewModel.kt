@@ -21,14 +21,14 @@ class RegistrationViewModel : ViewModel() {
 
             val request = RegisterRequest(
                 email = email,
-                birthDate = birthDate,
-                username = username,
+                fecha_nacimiento = birthDate,
+                nombre = username,
                 password = password
             )
 
             repository.registerUser(request).fold(
                 onSuccess = { response ->
-                    _registrationState.value = RegistrationState.Success(response.message)
+                    _registrationState.value = RegistrationState.Success(response.token)
                 },
                 onFailure = { exception ->
                     _registrationState.value = RegistrationState.Error(exception.message ?: "Unknown error occurred")

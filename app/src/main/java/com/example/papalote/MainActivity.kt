@@ -53,7 +53,8 @@ fun AppNavigation(navController: NavHostController) {
         // Pantalla de registro
         composable("register") {
             RegisterScreen(
-                onBack = { navController.navigateUp() } // Navega hacia atrás
+                onBack = { navController.navigateUp() }, // Navega hacia atrás
+                onRegistrationSuccess = {navController.navigate("welcome")}
             )
         }
     }

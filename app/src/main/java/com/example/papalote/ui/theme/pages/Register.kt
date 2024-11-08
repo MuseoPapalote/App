@@ -45,10 +45,10 @@ fun hashPassword(password: String): String {
 @Composable
 fun RegisterScreen(
     viewModel: RegistrationViewModel = viewModel(),
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onRegistrationSuccess: () -> Unit
 ) {
     var email by remember { mutableStateOf("") }
-    //var birthDate by remember { mutableStateOf("") }
     var birthDate by remember { mutableStateOf(Date()) }
 
     var username by remember { mutableStateOf("") }
@@ -123,6 +123,7 @@ fun RegisterScreen(
             }
             is RegistrationState.Success -> {
                 showLoadingDialog = false
+                onRegistrationSuccess()
             }
             is RegistrationState.Error -> {
                 showLoadingDialog = false
@@ -403,10 +404,4 @@ fun InputFieldWithIcon(
             }
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun RegisterScreenPreview() {
-    RegisterScreen(onBack = {})
 }
