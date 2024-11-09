@@ -17,6 +17,7 @@ import com.example.papalote.ui.theme.pages.LoginScreen
 import com.example.papalote.ui.theme.pages.RegisterScreen
 import com.example.papalote.ui.theme.pages.ZonasScreen
 import com.example.papalote.ui.theme.pages.ZoneDetailScreen
+import com.example.papalote.ui.theme.pages.EscaneoQRScreen
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +73,10 @@ fun AppNavigation(navController: NavHostController) {
         composable("zoneDetail/{zoneName}") { backStackEntry ->
             val zoneName = backStackEntry.arguments?.getString("zoneName") ?: "Zona Desconocida"
             ZoneDetailScreen(zoneName = zoneName, onBack = { navController.navigateUp() })
+        }
+        // Pantalla de Escaneo de QR
+        composable("scanQR") {
+            EscaneoQRScreen(navController = navController) // Conecta con tu pantalla EscaneoQR
         }
     }
 }

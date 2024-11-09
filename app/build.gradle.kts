@@ -50,6 +50,9 @@ android {
 }
 
 dependencies {
+    //Escaneo de qr
+    implementation("com.google.android.gms:play-services-code-scanner:16.1.0")
+
     // Añadir esta línea para tener acceso a Button y Text
     implementation("androidx.compose.material:material:1.5.1")
 
@@ -67,6 +70,10 @@ dependencies {
 
     implementation("androidx.navigation:navigation-compose:2.5.3")
     implementation(libs.androidx.appcompat)
+
+    // Jetpack Compose Foundation
+    implementation ("androidx.compose.foundation:foundation:1.5.1")
+
 
 
     // Testing dependencies

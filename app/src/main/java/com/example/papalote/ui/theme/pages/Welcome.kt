@@ -3,6 +3,7 @@ package com.example.papalote.ui.theme.pages
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
@@ -19,51 +20,66 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.papalote.R
 import com.example.papalote.ui.theme.PapaloteTheme
 
+import androidx.navigation.NavHostController
+
+import com.example.papalote.ui.theme.components.CustomBottomBar
+import androidx.compose.ui.platform.LocalContext
+
+
 @Composable
-fun WelcomeScreen(onLoginClicked: () -> Unit, onRegisterClicked: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .background(Color(0xFFD8E56D)), // Fondo verde claro
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+fun WelcomeScreen(
+    navController: NavHostController, // Recibe el NavController como parámetro
+    onLoginClicked: () -> Unit,
+    onRegisterClicked: () -> Unit
+) {
+    Scaffold(
+        bottomBar = { CustomBottomBar(navController) } // Agrega la barra inferior
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(16.dp)
+                .background(Color(0xFFD8E56D)), // Fondo verde claro
+            contentAlignment = Alignment.Center
         ) {
-            // Logo
-            Image(
-                painter = painterResource(id = R.drawable.papalotelogoo),
-                contentDescription = "Logo",
-                modifier = Modifier
-                    .size(200.dp)
-                    .padding(top = 50.dp),
-                contentScale = ContentScale.Fit
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                // Logo
+                Image(
+                    painter = painterResource(id = R.drawable.papalotelogoo),
+                    contentDescription = "Logo",
+                    modifier = Modifier
+                        .size(200.dp)
+                        .padding(top = 50.dp),
+                    contentScale = ContentScale.Fit
+                )
 
-            Spacer(modifier = Modifier.height(50.dp))
+                Spacer(modifier = Modifier.height(50.dp))
 
-            // Botón de Iniciar Sesión
-            GradientButton(
-                text = "Iniciar Sesión",
-                onClick = onLoginClicked
-            )
+                // Botón de Iniciar Sesión
+                GradientButton(
+                    text = "Iniciar Sesión",
+                    onClick = onLoginClicked
+                )
 
-            Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
-            // Botón de Registrarse
-            GradientButton(
-                text = "Registrarse",
-                onClick = onRegisterClicked
-            )
+                // Botón de Registrarse
+                GradientButton(
+                    text = "Registrarse",
+                    onClick = onRegisterClicked
+                )
+            }
         }
     }
 }
 
 @Composable
 fun GradientButton(text: String, onClick: () -> Unit) {
-    androidx.compose.material.Button(
+    Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
         modifier = Modifier
@@ -96,6 +112,7 @@ fun GradientButton(text: String, onClick: () -> Unit) {
 @Composable
 fun PreviewWelcomeScreen() {
     PapaloteTheme {
-        WelcomeScreen(onLoginClicked = {}, onRegisterClicked = {})
+        // En una vista previa no tenemos un NavController, así que usamos una función vacía
+        WelcomeScreen(navController = NavHostController(LocalContext.current), {}, {})
     }
 }
