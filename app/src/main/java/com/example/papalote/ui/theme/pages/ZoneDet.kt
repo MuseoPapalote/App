@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -127,31 +128,46 @@ fun ActivityCard(color: Color, icon: ImageVector, text: String) {
 
 @Composable
 fun MedalSection() {
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(vertical = 16.dp)
     ) {
-        // Filas de medallas (ejemplo de 3x4)
-        repeat(3) { rowIndex ->
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                repeat(4) {
-                    Icon(
-                        imageVector = Icons.Default.Star, // Cambia el icono según el diseño
-                        contentDescription = null,
-                        tint = Color(0xFFFFD700), // Color dorado
-                        modifier = Modifier.size(48.dp)
-                    )
+        // Imagen de fondo
+        Image(
+            painter = painterResource(id = R.drawable.comprendoLogo), // Cambia "background_medals" por el nombre de tu recurso de imagen
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
+
+        // Contenido de medallas encima de la imagen de fondo
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            repeat(3) { rowIndex ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    repeat(4) {
+                        Icon(
+                            imageVector = Icons.Default.Star, // Cambia el icono según el diseño
+                            contentDescription = null,
+                            tint = Color(0xFFFFD700), // Color dorado
+                            modifier = Modifier.size(48.dp)
+                        )
+                    }
                 }
+                Spacer(modifier = Modifier.height(8.dp))
             }
-            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
+
 
 @Composable
 fun BottomNavigationBar(onBack: () -> Unit) {
