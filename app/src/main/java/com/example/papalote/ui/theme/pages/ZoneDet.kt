@@ -71,7 +71,7 @@ fun Header(zoneName: String) {
         "Expreso" -> Color(0xFFFF6C01)
         "Soy" -> Color(0xFFDD0633)
         "Comprendo" -> Color(0xFF7C55C7)
-        "Pequenos" -> Color(0xFFC2D401)
+        "Pequeños" -> Color(0xFF008C95)
         else -> Color.Black // Color por defecto si la zona no coincide
     }
 
