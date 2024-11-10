@@ -187,6 +187,7 @@ fun MedalSection(zoneName: String) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 16.dp)
+            .background(Color(0x80000000))  //Efecto fondo semi transparente/negro
     ) {
         // Imagen de fondo
         Image(
