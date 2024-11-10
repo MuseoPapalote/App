@@ -12,6 +12,9 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,53 +34,67 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun ZonasScreen(onZoneClick: (String) -> Unit, onBack: () -> Unit){
-    Box(
-        modifier=Modifier
-            .fillMaxSize()
-            .background(Color(0xFFD8E56D)),
-        contentAlignment= Alignment.Center
-    ){
-        Column (
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween,
-            modifier= Modifier
-                .fillMaxHeight()
-                .padding(vertical = 16.dp)
-
+    Scaffold(
+        bottomBar = {
+            BottomNavigationMenu()
+        }
+    ){ paddingValues ->
+        Box(
+            modifier=Modifier
+                .fillMaxSize()
+                .background(Color(0xFFD8E56D))
+                .padding(paddingValues),
+            contentAlignment= Alignment.Center
         ){
-            Text(
-                text="Zonas",
-                color= Color(0xFF707070),
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 20.dp)
-            )
+            Column (
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween,
+                modifier= Modifier
+                    .fillMaxHeight()
+                    .padding(vertical = 16.dp)
 
-            //Iconos y Etiquetas GRID
-            val items = listOf(
-                Pair("Comprendo", R.drawable.comprendo), // Reemplaza con tus recursos
-                Pair("Comunico", R.drawable.comunico),
-                Pair("Expreso", R.drawable.expreso),
-                Pair("Pequeños", R.drawable.pequenos),
-                Pair("Pertenezco", R.drawable.pertenezco),
-                Pair("Soy", R.drawable.soy)
-            )
+            ){
+                Text(
+                    text="Zonas",
+                    color= Color(0xFF707070),
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 20.dp)
+                )
 
-            GridLayout(
-                items = items,
-                onZoneClick = onZoneClick
-            )
+                //Iconos y Etiquetas GRID
+                val items = listOf(
+                    Pair("Comprendo", R.drawable.comprendo), // Reemplaza con tus recursos
+                    Pair("Comunico", R.drawable.comunico),
+                    Pair("Expreso", R.drawable.expreso),
+                    Pair("Pequeños", R.drawable.pequenos),
+                    Pair("Pertenezco", R.drawable.pertenezco),
+                    Pair("Soy", R.drawable.soy)
+                )
 
-            Button(
-                onClick = { onBack() },
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray),
-                modifier = Modifier.wrapContentSize()
-            ) {
-                Text(text = "Volver", color = Color.White)
+                GridLayout(
+                    items = items,
+                    onZoneClick = onZoneClick
+                )
+
+                Button(
+                    onClick = { onBack() },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray),
+                    modifier = Modifier.wrapContentSize()
+                ) {
+                    Text(text = "Volver", color = Color.White)
+                }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+
+                ) {
+                    BottomNavigationMenu()
+                }
             }
-
         }
     }
+
 }
 
 @Composable
@@ -106,5 +123,33 @@ fun ZoneItem(name: String, icon: Int, onClick: () -> Unit) {
     ) {
         Image(painter = painterResource(id = icon), contentDescription = null)
         Text(text = name)
+    }
+}
+
+@Composable
+fun BottomNavigationMenu(){
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color(0xFFB8C94A)),
+        horizontalArrangement = Arrangement.SpaceAround,
+        verticalAlignment = Alignment.CenterVertically
+    ){
+        IconButton(onClick = {/*Acción para Home*/}) {
+            Image(
+                painter = painterResource(id = R.drawable.hoome),
+                contentDescription = "Home",
+                modifier = Modifier.size(48.dp)
+            )
+        }
+        IconButton(onClick = {/*Acción para camara*/}) {
+            Image(
+                painter = painterResource(id = R.drawable.qrs),
+                contentDescription = "Camara",
+                modifier = Modifier.size(48.dp)
+
+            )
+        }
+
     }
 }
