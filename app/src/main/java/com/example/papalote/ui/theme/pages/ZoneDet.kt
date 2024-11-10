@@ -72,7 +72,7 @@ fun HeaderWithLogo() {
         contentAlignment = Alignment.Center
     ) {
         Image(
-            painter = painterResource(id = R.drawable.logo_museo), // Cambia a tu recurso de imagen de logo
+            painter = painterResource(id = R.drawable.tocojuegoyaprendo), // Cambia a tu recurso de imagen de logo
             contentDescription = "Logo del Museo",
             modifier = Modifier.size(80.dp) // Ajusta el tamaño según sea necesario
         )
@@ -95,6 +95,7 @@ fun Header(zoneName: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(top = 16.dp) // Agrega un margen superior para separar el título del logo
             .background(Color(0xFFE0E600)), // Color de fondo de encabezado
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
