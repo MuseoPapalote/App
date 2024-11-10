@@ -33,11 +33,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.compose.foundation.clickable
 import androidx.compose.ui.unit.sp
 import com.example.papalote.R
 
 @Composable
-fun ZoneDetailScreen(zoneName: String, onBack: () -> Unit) {
+fun ZoneDetailScreen(zoneName: String, onBack: () -> Unit, navController: NavHostController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -53,7 +55,7 @@ fun ZoneDetailScreen(zoneName: String, onBack: () -> Unit) {
             Header(zoneName = zoneName)
 
             // Sección de actividades
-            ActivitiesSection()
+            ActivitiesSection(navController = navController)
 
             // Sección de medallas
             MedalSection(zoneName = zoneName)
@@ -118,40 +120,48 @@ fun Header(zoneName: String) {
 }
 
 @Composable
-fun ActivitiesSection() {
+fun ActivitiesSection(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 16.dp)
     ) {
-        // Usando imágenes locales en lugar de íconos
+        // Botón Actividad 1
         ActivityCard(
             color = Color(0xFFE6A957),
-            icon = painterResource(id = R.drawable.calendario), // Reemplaza con el ID de tu imagen
-            text = "Actividad 1"
+            icon = painterResource(id = R.drawable.calendario),
+            text = "Actividad 1",
+            onClick = { navController.navigate("dinosaur") }
         )
         Spacer(modifier = Modifier.height(8.dp))
+
+        // Botón Actividad 2
         ActivityCard(
             color = Color(0xFF6AB98D),
-            icon = painterResource(id = R.drawable.calendario), // Reemplaza con el ID de tu imagen
-            text = "Actividad 2"
+            icon = painterResource(id = R.drawable.calendario),
+            text = "Actividad 2",
+            onClick = { navController.navigate("dinosaur") }
         )
         Spacer(modifier = Modifier.height(8.dp))
+
+        // Botón Actividad 3
         ActivityCard(
             color = Color(0xFF55A8E2),
-            icon = painterResource(id = R.drawable.calendario), // Reemplaza con el ID de tu imagen
-            text = "Actividad 3"
+            icon = painterResource(id = R.drawable.calendario),
+            text = "Actividad 3",
+            onClick = { navController.navigate("dinosaur") }
         )
     }
 }
 
 @Composable
-fun ActivityCard(color: Color, icon: Painter, text: String) {
+fun ActivityCard(color: Color, icon: Painter, text: String, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(color, shape = RoundedCornerShape(12.dp))
-            .padding(16.dp),
+            .padding(16.dp)
+            .clickable(onClick = onClick),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
