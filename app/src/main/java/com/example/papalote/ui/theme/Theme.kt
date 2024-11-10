@@ -24,7 +24,7 @@ val ApercuProBlackFontFamily = FontFamily(
 )
 
 val ApercuMonoProLightFontFamily = FontFamily(
-    Font(R.font.apercu_mono_pro_light, FontWeight.Light)
+    Font(R.font.aperecu_mono_pro_light, FontWeight.Light)
 )
 
 // Define la Typography personalizada
