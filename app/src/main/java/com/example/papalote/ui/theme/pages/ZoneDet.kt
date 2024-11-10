@@ -54,7 +54,7 @@ fun ZoneDetailScreen(zoneName: String, onBack: () -> Unit) {
             ActivitiesSection()
 
             // Sección de medallas
-            MedalSection()
+            MedalSection(zoneName = zoneName)
 
             // Barra de navegación inferior
             BottomNavigationBar(onBack = onBack)
@@ -127,7 +127,18 @@ fun ActivityCard(color: Color, icon: ImageVector, text: String) {
 }
 
 @Composable
-fun MedalSection() {
+fun MedalSection(zoneName: String) {
+    // Selección de la imagen de fondo según el nombre de la zona
+    val backgroundImage = when (zoneName) {
+        "Comprendo" -> R.drawable.comprendologo
+        "Comunico" -> R.drawable.comunicologo
+        "Expreso" -> R.drawable.expresologo
+        "Pequeños" -> R.drawable.pequenoslogo
+        "Pertenezco" -> R.drawable.pertenezcologo
+        "Soy" -> R.drawable.soylogo
+        else -> R.drawable.soylogo // Imagen por defecto si la zona no coincide
+    }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -135,7 +146,7 @@ fun MedalSection() {
     ) {
         // Imagen de fondo
         Image(
-            painter = painterResource(id = R.drawable.comprendoLogo), // Cambia "background_medals" por el nombre de tu recurso de imagen
+            painter = painterResource(id = backgroundImage),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
