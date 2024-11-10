@@ -27,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -123,16 +124,29 @@ fun ActivitiesSection() {
             .fillMaxWidth()
             .padding(vertical = 16.dp)
     ) {
-        ActivityCard(color = Color(0xFFE6A957), icon = Icons.Default.Star, text = "Actividad 1")
+        // Usando imágenes locales en lugar de íconos
+        ActivityCard(
+            color = Color(0xFFE6A957),
+            icon = painterResource(id = R.drawable.calendario), // Reemplaza con el ID de tu imagen
+            text = "Actividad 1"
+        )
         Spacer(modifier = Modifier.height(8.dp))
-        ActivityCard(color = Color(0xFF6AB98D), icon = Icons.Default.Star, text = "Actividad 2")
+        ActivityCard(
+            color = Color(0xFF6AB98D),
+            icon = painterResource(id = R.drawable.calendario), // Reemplaza con el ID de tu imagen
+            text = "Actividad 2"
+        )
         Spacer(modifier = Modifier.height(8.dp))
-        ActivityCard(color = Color(0xFF55A8E2), icon = Icons.Default.Star, text = "Actividad 3")
+        ActivityCard(
+            color = Color(0xFF55A8E2),
+            icon = painterResource(id = R.drawable.calendario), // Reemplaza con el ID de tu imagen
+            text = "Actividad 3"
+        )
     }
 }
 
 @Composable
-fun ActivityCard(color: Color, icon: ImageVector, text: String) {
+fun ActivityCard(color: Color, icon: Painter, text: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
