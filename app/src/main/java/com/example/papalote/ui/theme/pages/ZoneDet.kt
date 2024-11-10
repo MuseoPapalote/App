@@ -64,6 +64,17 @@ fun ZoneDetailScreen(zoneName: String, onBack: () -> Unit) {
 
 @Composable
 fun Header(zoneName: String) {
+    // Selección del color del texto según el nombre de la zona
+    val titleColor = when (zoneName) {
+        "Comunico" -> Color(0xFF016ED2)
+        "Pertenezco" -> Color(0xFFC2D401)
+        "Expreso" -> Color(0xFFFF6C01)
+        "Soy" -> Color(0xFFDD0633)
+        "Comprendo" -> Color(0xFF7C55C7)
+        "Pequenos" -> Color(0xFFC2D401)
+        else -> Color.Black // Color por defecto si la zona no coincide
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -74,7 +85,7 @@ fun Header(zoneName: String) {
             text = zoneName,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.White,
+            color = titleColor, // Aplica el color del título aquí
             modifier = Modifier.padding(vertical = 8.dp)
         )
         Text(
