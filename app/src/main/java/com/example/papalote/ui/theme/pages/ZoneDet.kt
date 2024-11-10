@@ -63,6 +63,23 @@ fun ZoneDetailScreen(zoneName: String, onBack: () -> Unit) {
 }
 
 @Composable
+fun HeaderWithLogo() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color(0xFFC2D401)) // Color de fondo del nuevo encabezado
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.logo_museo), // Cambia a tu recurso de imagen de logo
+            contentDescription = "Logo del Museo",
+            modifier = Modifier.size(80.dp) // Ajusta el tamaño según sea necesario
+        )
+    }
+}
+
+@Composable
 fun Header(zoneName: String) {
     // Selección del color del texto según el nombre de la zona
     val titleColor = when (zoneName) {
