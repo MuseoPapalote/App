@@ -75,7 +75,7 @@ fun HeaderWithLogo() {
         Image(
             painter = painterResource(id = R.drawable.tocojuegoyaprendo), // Cambia a tu recurso de imagen de logo
             contentDescription = "Logo del Museo",
-            modifier = Modifier.size(80.dp) // Ajusta el tamaño según sea necesario
+            modifier = Modifier.width(2700.dp) // Ajusta el tamaño según sea necesario
         )
     }
 }
