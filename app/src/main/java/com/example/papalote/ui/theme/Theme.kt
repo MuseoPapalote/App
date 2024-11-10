@@ -23,6 +23,10 @@ val ApercuProBlackFontFamily = FontFamily(
     Font(R.font.apercu_pro_black, FontWeight.Black)
 )
 
+val ApercuMonoProLightFontFamily = FontFamily(
+    Font(R.font.apercu_mono_pro_light, FontWeight.Light)
+)
+
 // Define la Typography personalizada
 val CustomTypography = Typography(
     displayLarge = TextStyle(
