@@ -1,5 +1,6 @@
 package com.example.papalote.ui.theme.pages
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,9 +28,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.papalote.R
 
 @Composable
 fun ZoneDetailScreen(zoneName: String, onBack: () -> Unit) {
@@ -155,14 +158,24 @@ fun BottomNavigationBar(onBack: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
-        horizontalArrangement = Arrangement.SpaceAround
-    ) {
-        IconButton(onClick = { /* Acción de buscar */ }) {
-            Icon(Icons.Default.Search, contentDescription = "Buscar")
+            .background(Color(0xFFB8C94A)),
+        horizontalArrangement = Arrangement.SpaceAround,
+        verticalAlignment = Alignment.CenterVertically
+    ){
+        androidx.compose.material.IconButton(onClick = {/*Acción para Home*/ }) {
+            Image(
+                painter = painterResource(id = R.drawable.hoome),
+                contentDescription = "Home",
+                modifier = Modifier.size(48.dp)
+            )
         }
-        IconButton(onClick = onBack) {
-            Icon(Icons.Default.Home, contentDescription = "Inicio")
+        androidx.compose.material.IconButton(onClick = {/*Acción para camara*/ }) {
+            Image(
+                painter = painterResource(id = R.drawable.qrs),
+                contentDescription = "Camara",
+                modifier = Modifier.size(48.dp)
+
+            )
         }
 
     }
