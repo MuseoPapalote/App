@@ -47,6 +47,7 @@ fun ZoneDetailScreen(zoneName: String, onBack: () -> Unit) {
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
+            HeaderWithLogo()
             // Barra de encabezado
             Header(zoneName = zoneName)
 
