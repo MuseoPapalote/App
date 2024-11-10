@@ -97,8 +97,8 @@ fun Header(zoneName: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 16.dp) // Agrega un margen superior para separar el título del logo
-            .background(Color(0xFFE0E600)), // Color de fondo de encabezado
+            .padding(top = 16.dp), // Agrega un margen superior para separar el título del logo
+            //.background(Color(0xFFE0E600)), // Color de fondo de encabezado
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
@@ -111,7 +111,7 @@ fun Header(zoneName: String) {
         Text(
             text = "Actividades del día",
             fontSize = 16.sp,
-            color = Color.White,
+            color = Color.Black,
             modifier = Modifier.padding(bottom = 8.dp)
         )
     }
@@ -158,7 +158,7 @@ fun ActivityCard(color: Color, icon: Painter, text: String) {
             icon,
             contentDescription = null,
             tint = Color.White,
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier.size(34.dp)
         )
         Spacer(modifier = Modifier.width(16.dp))
         Text(
@@ -203,17 +203,16 @@ fun MedalSection(zoneName: String) {
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            repeat(3) { rowIndex ->
+            repeat(4) { rowIndex ->
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceAround
                 ) {
                     repeat(4) {
-                        Icon(
-                            imageVector = Icons.Default.Star, // Cambia el icono según el diseño
+                        Image(
+                            painter = painterResource(id = R.drawable.medalla), // Cambia el ID por la imagen de la medalla
                             contentDescription = null,
-                            tint = Color(0xFFFFD700), // Color dorado
-                            modifier = Modifier.size(48.dp)
+                            modifier = Modifier.size(68.dp)
                         )
                     }
                 }
