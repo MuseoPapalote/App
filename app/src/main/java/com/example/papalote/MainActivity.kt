@@ -65,8 +65,9 @@ fun AppNavigation(navController: NavHostController) {
             )
         }
         // Pantalla del dinosaurio
-        composable("dinosaur") {
-            ComunicoScreen(onBack = { navController.navigateUp() })
+        composable("dinosaur/{zoneName}") { backStackEntry ->
+            val zoneName = backStackEntry.arguments?.getString("zoneName") ?: "Zona Desconocida"
+            ComunicoScreen(zoneName = zoneName, onBack = { navController.navigateUp() })
         }
     }
 }

@@ -55,7 +55,7 @@ fun ZoneDetailScreen(zoneName: String, onBack: () -> Unit, navController: NavHos
             Header(zoneName = zoneName)
 
             // Sección de actividades
-            ActivitiesSection(navController = navController)
+            ActivitiesSection(navController = navController, zoneName = zoneName)
 
             // Sección de medallas
             MedalSection(zoneName = zoneName)
@@ -120,7 +120,7 @@ fun Header(zoneName: String) {
 }
 
 @Composable
-fun ActivitiesSection(navController: NavHostController) {
+fun ActivitiesSection(navController: NavHostController, zoneName: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -131,7 +131,7 @@ fun ActivitiesSection(navController: NavHostController) {
             color = Color(0xFFE6A957),
             icon = painterResource(id = R.drawable.calendario),
             text = "Actividad 1",
-            onClick = { navController.navigate("dinosaur") }
+            onClick = { navController.navigate("dinosaur/$zoneName") }
         )
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -140,7 +140,7 @@ fun ActivitiesSection(navController: NavHostController) {
             color = Color(0xFF6AB98D),
             icon = painterResource(id = R.drawable.calendario),
             text = "Actividad 2",
-            onClick = { navController.navigate("dinosaur") }
+            onClick = { navController.navigate("dinosaur/$zoneName") }
         )
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -149,7 +149,7 @@ fun ActivitiesSection(navController: NavHostController) {
             color = Color(0xFF55A8E2),
             icon = painterResource(id = R.drawable.calendario),
             text = "Actividad 3",
-            onClick = { navController.navigate("dinosaur") }
+            onClick = { navController.navigate("dinosaur/$zoneName") }
         )
     }
 }

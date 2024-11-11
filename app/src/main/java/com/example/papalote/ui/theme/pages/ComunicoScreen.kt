@@ -21,16 +21,16 @@ import com.example.papalote.R
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun ComunicoScreen(onBack: () -> Unit) {
+fun ComunicoScreen(zoneName: String, onBack: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFF5F5DC)), // Fondo claro
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Encabezado
+        // Encabezado dinámico con el nombre de la zona
         Text(
-            text = "comunico",
+            text = zoneName, // Mostramos el nombre de la zona aquí
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF016ED2), // Color azul del título
@@ -104,5 +104,5 @@ fun AnswerButton(text: String) {
 @Preview(showBackground = true)
 @Composable
 fun ComunicoScreenPreview() {
-    ComunicoScreen(onBack = {})
+    ComunicoScreen(zoneName = "Comunico", onBack = {})
 }
