@@ -22,6 +22,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.papalote.R
 import com.example.papalote.states.LoginState
 import com.example.papalote.viewModel.LoginViewModel
+import java.security.MessageDigest
+import kotlin.text.Charsets.UTF_8
+
 
 @Composable
 fun LoginScreen(
@@ -29,8 +32,16 @@ fun LoginScreen(
     onLoginSuccess: () -> Unit,
     onBack: () -> Unit
 ) {
+    fun hashPassword(password: String): String {
+        val bytes = password.toByteArray(UTF_8)
+        val md = MessageDigest.getInstance("SHA-256")
+        val digest = md.digest(bytes)
+        return digest.fold("") { str, it -> str + "%02x".format(it) }
+    }
+
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var hashedPass by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     var showLoadingDialog by remember { mutableStateOf(false) }
     var showError by remember { mutableStateOf(false) }
@@ -38,6 +49,29 @@ fun LoginScreen(
 
     // Observa el estado del login
     val loginState by viewModel.loginState.collectAsState()
+
+    fun isValidEmail(email: String): Boolean{
+        val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$"
+        return email.matches(emailRegex.toRegex())
+    }
+
+    fun validateFields(): Boolean{
+        return when{
+            email.isBlank() -> {
+                errorMessage = "El campo de correo está vacío"
+                false
+            }
+            !isValidEmail(email) -> {
+                errorMessage = "El correo no es válido"
+                false
+            }
+            password.isBlank() -> {
+                errorMessage = "El campo de contraseña está vacío"
+                false
+            }
+            else -> true
+        }
+    }
 
     LaunchedEffect(loginState) {
         when (loginState) {
@@ -114,7 +148,16 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(
-                    onClick = { viewModel.loginUser(email, password) },
+                    onClick = {
+                        if (validateFields()){
+                            hashedPass = hashPassword(password)
+                            viewModel.loginUser(email, hashedPass)
+
+                            showError = false
+                        } else{
+                            showError = true
+                        }
+                              },
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     modifier = Modifier
                         .padding(horizontal = 32.dp)
