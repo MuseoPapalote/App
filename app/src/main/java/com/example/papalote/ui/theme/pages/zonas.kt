@@ -29,14 +29,18 @@ import androidx.compose.ui.unit.sp
 import com.example.papalote.R
 import androidx.compose.ui.tooling.preview.Preview
 
+import androidx.navigation.NavHostController
+import com.example.papalote.ui.theme.components.CustomBottomBar
+
 
 
 
 @Composable
-fun ZonasScreen(onZoneClick: (String) -> Unit, onBack: () -> Unit){
+fun ZonasScreen(navController:NavHostController,onZoneClick: (String) -> Unit, onBack: () -> Unit){
     Scaffold(
         bottomBar = {
-            BottomNavigationMenu()
+            // Usamos CustomBottomBar aquí
+            CustomBottomBar(navController = navController)
         }
     ){ paddingValues ->
         Box(
@@ -84,13 +88,6 @@ fun ZonasScreen(onZoneClick: (String) -> Unit, onBack: () -> Unit){
                 ) {
                     Text(text = "Volver", color = Color.White)
                 }
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-
-                ) {
-                    BottomNavigationMenu()
-                }
             }
         }
     }
@@ -126,30 +123,3 @@ fun ZoneItem(name: String, icon: Int, onClick: () -> Unit) {
     }
 }
 
-@Composable
-fun BottomNavigationMenu(){
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color(0xFFB8C94A)),
-        horizontalArrangement = Arrangement.SpaceAround,
-        verticalAlignment = Alignment.CenterVertically
-    ){
-        IconButton(onClick = {/*Acción para Home*/}) {
-            Image(
-                painter = painterResource(id = R.drawable.hoome),
-                contentDescription = "Home",
-                modifier = Modifier.size(48.dp)
-            )
-        }
-        IconButton(onClick = {/*Acción para camara*/}) {
-            Image(
-                painter = painterResource(id = R.drawable.qrs),
-                contentDescription = "Camara",
-                modifier = Modifier.size(48.dp)
-
-            )
-        }
-
-    }
-}

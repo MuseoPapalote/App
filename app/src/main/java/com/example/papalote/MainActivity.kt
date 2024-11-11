@@ -63,6 +63,7 @@ fun AppNavigation(navController: NavHostController) {
         // Pantalla de Zonas
         composable("zones") {
             ZonasScreen(
+                navController = navController, // Pasar el NavController
                 onZoneClick = { zoneName ->
                     navController.navigate("zoneDetail/$zoneName") // Navegar a la pantalla de detalle de la zona
                 },
