@@ -1,4 +1,4 @@
-package com.example.papalote
+package com.example.papalote.states
 
 sealed class RegistrationState {
     data object Idle : RegistrationState()

@@ -24,15 +24,14 @@ import java.security.MessageDigest
 import kotlin.text.Charsets.UTF_8
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.papalote.RegistrationViewModel
-import com.example.papalote.RegistrationState
+import com.example.papalote.viewModel.RegistrationViewModel
+import com.example.papalote.states.RegistrationState
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.Calendar
 import android.app.DatePickerDialog
 import androidx.compose.ui.platform.LocalContext
-
 
 
 fun hashPassword(password: String): String {
@@ -135,7 +134,6 @@ fun RegisterScreen(
             }
         }
     }
-
 
     Box(
         modifier = Modifier

@@ -43,11 +43,8 @@ fun AppNavigation(navController: NavHostController) {
         // Pantalla de inicio de sesión
         composable("login") {
             LoginScreen(
-                onLoginClick = {
-                    // Aquí puedes definir la acción para iniciar sesión.
-                    // Por ahora, puede estar vacío o puedes navegar a otra pantalla si es necesario
-                },
-                onBack = { navController.navigateUp() } // Navega hacia atrás
+                onLoginSuccess = {navController.navigateUp()},
+                onBack = { navController.navigateUp() }, // Navega hacia atrás
             )
         }
         // Pantalla de registro

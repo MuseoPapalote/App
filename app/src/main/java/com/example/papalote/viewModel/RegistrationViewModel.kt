@@ -1,14 +1,17 @@
-package com.example.papalote
+package com.example.papalote.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.papalote.RegisterRequest
+import com.example.papalote.API.Repository
+import com.example.papalote.states.RegistrationState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.util.Date
 
 class RegistrationViewModel : ViewModel() {
-    private val repository = RegistrationRepository()
+    private val repository = Repository()
 
     private val _registrationState = MutableStateFlow<RegistrationState>(RegistrationState.Idle)
     val registrationState: StateFlow<RegistrationState> = _registrationState
@@ -28,10 +31,11 @@ class RegistrationViewModel : ViewModel() {
 
             repository.registerUser(request).fold(
                 onSuccess = { response ->
-                    _registrationState.value = RegistrationState.Success(response.token)
+                    _registrationState.value = RegistrationState.Success(response.accessToken)
                 },
                 onFailure = { exception ->
-                    _registrationState.value = RegistrationState.Error(exception.message ?: "Unknown error occurred")
+                    _registrationState.value =
+                        RegistrationState.Error(exception.message ?: "Unknown error occurred")
                 }
             )
         }
