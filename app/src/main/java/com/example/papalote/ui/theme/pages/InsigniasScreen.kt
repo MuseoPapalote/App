@@ -3,6 +3,7 @@ package com.example.papalote.ui.theme.pages
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,12 +32,20 @@ fun InsigniasScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF8A3EB3))
+            .background(Color.White)
             .padding(16.dp)
     ) {
         // Top Banner
         TopBanner()
         Spacer(modifier = Modifier.height(24.dp))
+        Text(
+            text = "Insignias",
+            fontSize = 35.sp,
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black,
+            modifier = Modifier.weight(1f)
+        )
 
         // Badges Grid with a Single Icon for All
         BadgesGrid()
@@ -47,6 +57,7 @@ fun InsigniasScreen() {
     }
 }
 
+
 @Composable
 fun TopBanner() {
     Row(
@@ -56,13 +67,12 @@ fun TopBanner() {
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            text = "Insignias",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.White,
-            modifier = Modifier.weight(1f)
+        Image(
+            painter = painterResource(id = R.drawable.tocojuegoyaprendo), // Cambia a tu recurso de imagen de logo
+            contentDescription = "Logo del Museo",
+            modifier = Modifier.width(2700.dp) // Ajusta el tamaño según sea necesario
         )
+
         Image(
             painter = painterResource(id = R.drawable.medalla),
             contentDescription = "Menu Icon",
@@ -107,7 +117,7 @@ fun BadgeItem(label: String) {
         Text(
             text = label,
             fontSize = 14.sp,
-            color = Color.White
+            color = Color.Black
         )
     }
 }
@@ -117,6 +127,7 @@ fun BottomIcons() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .background(Color(0xFFA1D800))
             .padding(vertical = 16.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically

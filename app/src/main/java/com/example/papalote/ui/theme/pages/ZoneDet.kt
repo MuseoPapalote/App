@@ -2,6 +2,7 @@ package com.example.papalote.ui.theme.pages
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,12 +33,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.papalote.R
 
+
 @Composable
-fun ZoneDetailScreen(zoneName: String, onBack: () -> Unit) {
+fun ZoneDetailScreen(zoneName: String, onBack: () -> Unit, onMedalClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -56,7 +59,7 @@ fun ZoneDetailScreen(zoneName: String, onBack: () -> Unit) {
             ActivitiesSection()
 
             // Sección de medallas
-            MedalSection(zoneName = zoneName)
+            MedalSection(zoneName = zoneName, onMedalClick = onMedalClick)
 
             // Barra de navegación inferior
             BottomNavigationBar(onBack = onBack)
@@ -171,8 +174,7 @@ fun ActivityCard(color: Color, icon: Painter, text: String) {
 }
 
 @Composable
-fun MedalSection(zoneName: String) {
-    // Selección de la imagen de fondo según el nombre de la zona
+fun MedalSection(zoneName: String, onMedalClick: () -> Unit) {
     val backgroundImage = when (zoneName) {
         "Comprendo" -> R.drawable.comprendologo
         "Comunico" -> R.drawable.comunicologo
@@ -180,16 +182,15 @@ fun MedalSection(zoneName: String) {
         "Pequeños" -> R.drawable.pequenoslogo
         "Pertenezco" -> R.drawable.pertenezcologo
         "Soy" -> R.drawable.soylogo
-        else -> R.drawable.soylogo // Imagen por defecto si la zona no coincide
+        else -> R.drawable.soylogo
     }
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 16.dp)
-            .background(Color(0x80000000))  //Efecto fondo semi transparente/negro
+            .background(Color(0x80000000))
     ) {
-        // Imagen de fondo
         Image(
             painter = painterResource(id = backgroundImage),
             contentDescription = null,
@@ -197,7 +198,6 @@ fun MedalSection(zoneName: String) {
             modifier = Modifier.fillMaxSize()
         )
 
-        // Contenido de medallas encima de la imagen de fondo
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -211,9 +211,11 @@ fun MedalSection(zoneName: String) {
                 ) {
                     repeat(4) {
                         Image(
-                            painter = painterResource(id = R.drawable.medalla), // Cambia el ID por la imagen de la medalla
-                            contentDescription = null,
-                            modifier = Modifier.size(68.dp)
+                            painter = painterResource(id = R.drawable.medalla),
+                            contentDescription = "Medalla",
+                            modifier = Modifier
+                                .size(68.dp)
+                                .clickable { onMedalClick() }  // Agrega onClick a la medalla
                         )
                     }
                 }
@@ -222,6 +224,7 @@ fun MedalSection(zoneName: String) {
         }
     }
 }
+
 
 
 @Composable

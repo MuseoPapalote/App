@@ -72,7 +72,11 @@ fun AppNavigation(navController: NavHostController) {
         // Pantalla de Detalle de Zona
         composable("zoneDetail/{zoneName}") { backStackEntry ->
             val zoneName = backStackEntry.arguments?.getString("zoneName") ?: "Zona Desconocida"
-            ZoneDetailScreen(zoneName = zoneName, onBack = { navController.navigateUp() })
+            ZoneDetailScreen(zoneName = zoneName, onBack = { navController.navigateUp() }, onMedalClick = { navController.navigate("insignias")})
+        }
+        // Pantalla de Insignias
+        composable("insignias") {
+            InsigniasScreen()
         }
 
     }
