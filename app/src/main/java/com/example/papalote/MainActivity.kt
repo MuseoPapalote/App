@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.papalote.ui.theme.PapaloteTheme
+import com.example.papalote.ui.theme.pages.InsigniasScreen
 import com.example.papalote.ui.theme.pages.WelcomeScreen
 import com.example.papalote.ui.theme.pages.LoginScreen
 import com.example.papalote.ui.theme.pages.RegisterScreen
@@ -73,5 +74,6 @@ fun AppNavigation(navController: NavHostController) {
             val zoneName = backStackEntry.arguments?.getString("zoneName") ?: "Zona Desconocida"
             ZoneDetailScreen(zoneName = zoneName, onBack = { navController.navigateUp() })
         }
+
     }
 }
