@@ -6,20 +6,14 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import com.example.papalote.ui.theme.pages.ComunicoScreen
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.papalote.ui.theme.PapaloteTheme
-import com.example.papalote.ui.theme.pages.InsigniasScreen
-import com.example.papalote.ui.theme.pages.WelcomeScreen
-import com.example.papalote.ui.theme.pages.LoginScreen
-import com.example.papalote.ui.theme.pages.RegisterScreen
-import com.example.papalote.ui.theme.pages.ZonasScreen
-import com.example.papalote.ui.theme.pages.ZoneDetailScreen
-import com.example.papalote.ui.theme.pages.EscaneoQRScreen
+import com.example.papalote.ui.theme.pages.*
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +30,14 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "welcome") {
+    // Cambiamos la pantalla de inicio a "splash"
+    NavHost(navController = navController, startDestination = "splash") {
+
+        // Pantalla de Splash
+        composable("splash") {
+            SplashScreen(navController = navController)
+        }
+
         // Pantalla de bienvenida
         composable("welcome") {
             WelcomeScreen(
@@ -44,6 +45,7 @@ fun AppNavigation(navController: NavHostController) {
                 onRegisterClicked = { navController.navigate("register") }
             )
         }
+
         // Pantalla de inicio de sesión
         composable("login") {
             LoginScreen(
@@ -51,6 +53,7 @@ fun AppNavigation(navController: NavHostController) {
                 onBack = { navController.navigateUp() }
             )
         }
+
         // Pantalla de registro
         composable("register") {
             RegisterScreen(onBack = { navController.navigateUp() })
@@ -59,13 +62,14 @@ fun AppNavigation(navController: NavHostController) {
         // Pantalla de Zonas
         composable("zones") {
             ZonasScreen(
-                navController = navController, // Pasar el NavController
+                navController = navController,
                 onZoneClick = { zoneName ->
-                    navController.navigate("zoneDetail/$zoneName") // Navegar a la pantalla de detalle de la zona
+                    navController.navigate("zoneDetail/$zoneName")
                 },
                 onBack = { navController.navigateUp() }
             )
         }
+
         // Pantalla de Detalle de Zona
         composable("zoneDetail/{zoneName}") { backStackEntry ->
             val zoneName = backStackEntry.arguments?.getString("zoneName") ?: "Zona Desconocida"
@@ -76,19 +80,25 @@ fun AppNavigation(navController: NavHostController) {
                 onMedalClick = { navController.navigate("insignias") }
             )
         }
+
         // Pantalla de Insignias
         composable("insignias") {
-            InsigniasScreen()
+            InsigniasScreen(navController = navController)
         }
+
         // Pantalla de Escaneo de QR
         composable("scanQR") {
-            EscaneoQRScreen(navController = navController) // Conecta con tu pantalla EscaneoQR
+            EscaneoQRScreen(navController = navController)
         }
 
+        // Pantalla de Dinosaurio (ComunicoScreen)
         composable("dinosaur/{zoneName}") { backStackEntry ->
             val zoneName = backStackEntry.arguments?.getString("zoneName") ?: "Zona Desconocida"
-            ComunicoScreen(zoneName = zoneName, onBack = { navController.navigateUp() })
+            ComunicoScreen(
+                zoneName = zoneName,
+                onBack = { navController.navigateUp() },
+                navController = navController
+            )
         }
-
     }
 }

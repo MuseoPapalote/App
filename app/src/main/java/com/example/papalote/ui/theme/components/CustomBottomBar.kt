@@ -24,34 +24,70 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-
 @Composable
 fun CustomBottomBar(
-    navController: NavHostController // NavController para manejar la navegación
+    navController: NavHostController
 ) {
-    var isMenuExpanded by remember { mutableStateOf(false) } // Controla el estado del DropdownMenu
+    var isMenuExpanded by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .clip(RoundedCornerShape(50.dp)) // Forma ovalada para el fondo
-            .background(Color(0xFF6A0DAD)), // Fondo morado
-        contentAlignment = Alignment.Center
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        contentAlignment = Alignment.BottomCenter
     ) {
-        // Botón flotante "+"
+        // Barra inferior con los 3 botones principales
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(50.dp))
+                .background(Color(0xFF6A0DAD)) // Fondo morado
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Ícono de Buscar
+            IconButton(onClick = { navController.navigate("search") }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.map),
+                    contentDescription = "Buscar",
+                    tint = Color.White,
+                    modifier = Modifier.size(48.dp)
+                )
+            }
+
+            // Ícono de Home (redirige a la página de Zonas)
+            IconButton(onClick = { navController.navigate("zones") }) {
+                Image(
+                    painter = painterResource(id = R.drawable.hoome),
+                    contentDescription = "Home",
+                    modifier = Modifier.size(48.dp)
+                )
+            }
+
+            // Ícono de QR
+            IconButton(onClick = { navController.navigate("scanQR") }) {
+                Image(
+                    painter = painterResource(id = R.drawable.qrs),
+                    contentDescription = "Escaneo QR",
+                    modifier = Modifier.size(48.dp)
+                )
+            }
+        }
+
+        // Botón flotante "+" (más pequeño)
         FloatingActionButton(
             onClick = { isMenuExpanded = true },
             backgroundColor = Color(0xFF0033CC), // Azul para el botón flotante
             modifier = Modifier
                 .align(Alignment.TopCenter)
-                .offset(y = (-30).dp) // Elevar el botón flotante
-                .clip(CircleShape) // Forma circular para el botón flotante
-                .size(70.dp) // Tamaño ajustado del botón
+                .offset(y = (-40).dp) // Ajustar la posición del botón flotante
+                .size(60.dp) // Tamaño reducido del botón flotante
+                .clip(CircleShape)
         ) {
             Icon(
                 imageVector = Icons.Default.Add,
-                contentDescription = "Menu",
+                contentDescription = "Agregar",
                 tint = Color.Yellow
             )
         }
@@ -59,7 +95,7 @@ fun CustomBottomBar(
         // DropdownMenu desplegable
         DropdownMenu(
             expanded = isMenuExpanded,
-            onDismissRequest = { isMenuExpanded = false } // Cierra el menú al hacer clic fuera
+            onDismissRequest = { isMenuExpanded = false }
         ) {
             DropdownMenuItem(onClick = {
                 navController.navigate("profile")
@@ -69,11 +105,10 @@ fun CustomBottomBar(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start
                 ) {
-                    // Ícono para "Perfil"
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_profile), // Ícono real de "Perfil"
+                        painter = painterResource(id = R.drawable.ic_profile),
                         contentDescription = "Perfil",
-                        tint = Color(0xFFA4CD39), // Color verde similar al diseño
+                        tint = Color(0xFFA4CD39),
                         modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.width(16.dp))
@@ -84,6 +119,7 @@ fun CustomBottomBar(
                     )
                 }
             }
+
             DropdownMenuItem(onClick = {
                 navController.navigate("badges")
                 isMenuExpanded = false
@@ -92,9 +128,8 @@ fun CustomBottomBar(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start
                 ) {
-                    // Ícono para "Insignias"
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_badges), // Ícono real de "Insignias"
+                        painter = painterResource(id = R.drawable.ic_badges),
                         contentDescription = "Insignias",
                         tint = Color(0xFFA4CD39),
                         modifier = Modifier.size(24.dp)
@@ -107,6 +142,7 @@ fun CustomBottomBar(
                     )
                 }
             }
+
             DropdownMenuItem(onClick = {
                 navController.navigate("zones")
                 isMenuExpanded = false
@@ -115,9 +151,8 @@ fun CustomBottomBar(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start
                 ) {
-                    // Ícono para "Zonas"
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_zones), // Ícono real de "Zonas"
+                        painter = painterResource(id = R.drawable.ic_zones),
                         contentDescription = "Zonas",
                         tint = Color(0xFFA4CD39),
                         modifier = Modifier.size(24.dp)
@@ -129,44 +164,6 @@ fun CustomBottomBar(
                         style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Normal)
                     )
                 }
-            }
-        }
-
-        // Barra inferior con los 3 botones principales
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 12.dp), // Espaciado para ajustar dentro del fondo ovalado
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Ícono de Buscar
-            IconButton(onClick = { navController.navigate("search") }) {
-                Icon(
-                    imageVector = Icons.Default.Search, // Ícono predeterminado de Material Icons
-                    contentDescription = "Buscar",
-                    tint = Color.White,
-                    modifier = Modifier.size(48.dp)
-                )
-            }
-
-            // Ícono personalizado de Home
-            IconButton(onClick = { navController.navigate("home") }) {
-                Image(
-                    painter = painterResource(id = R.drawable.hoome), // Ícono personalizado de "Inicio"
-                    contentDescription = "Home",
-                    modifier = Modifier.size(48.dp)
-                )
-            }
-
-            // Ícono personalizado de QR
-            IconButton(onClick = { navController.navigate("scanQR") }) {
-                Image(
-                    painter = painterResource(id = R.drawable.qrs), // Ícono personalizado de "Escaneo QR"
-                    contentDescription = "Escaneo QR",
-                    modifier = Modifier.size(48.dp)
-                )
             }
         }
     }

@@ -2,17 +2,9 @@ package com.example.papalote.ui.theme.pages
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,39 +16,46 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.papalote.R
+import com.example.papalote.ui.theme.components.CustomBottomBar
 
-@Preview
 @Composable
-fun InsigniasScreen() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(16.dp)
-    ) {
-        // Top Banner
-        TopBanner()
-        Spacer(modifier = Modifier.height(24.dp))
-        Text(
-            text = "Insignias",
-            fontSize = 35.sp,
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black,
-            modifier = Modifier.weight(1f)
-        )
+fun InsigniasScreen(navController: NavHostController) {
+    Scaffold(
+        bottomBar = {
+            CustomBottomBar(navController = navController)
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .padding(paddingValues)
+                .padding(16.dp)
+        ) {
+            // Top Banner
+            TopBanner()
+            Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                text = "Insignias",
+                fontSize = 35.sp,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black,
+                modifier = Modifier.weight(1f)
+            )
 
-        // Badges Grid with a Single Icon for All
-        BadgesGrid()
+            // Badges Grid
+            BadgesGrid()
 
-        Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(1f))
 
-        // Bottom Calendar and Clock
-        BottomIcons()
+            // Bottom Calendar and Clock
+            BottomIcons()
+        }
     }
 }
-
 
 @Composable
 fun TopBanner() {
@@ -68,15 +67,9 @@ fun TopBanner() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            painter = painterResource(id = R.drawable.tocojuegoyaprendo), // Cambia a tu recurso de imagen de logo
+            painter = painterResource(id = R.drawable.tocojuegoyaprendo),
             contentDescription = "Logo del Museo",
-            modifier = Modifier.width(2700.dp) // Ajusta el tamaño según sea necesario
-        )
-
-        Image(
-            painter = painterResource(id = R.drawable.medalla),
-            contentDescription = "Menu Icon",
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier.size(100.dp)
         )
     }
 }
