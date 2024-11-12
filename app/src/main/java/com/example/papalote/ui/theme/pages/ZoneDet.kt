@@ -35,12 +35,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.compose.foundation.clickable
 import androidx.compose.ui.unit.sp
 import com.example.papalote.R
 
 
 @Composable
-fun ZoneDetailScreen(zoneName: String, onBack: () -> Unit, onMedalClick: () -> Unit) {
+fun ZoneDetailScreen(zoneName: String, onBack: () -> Unit, navController: NavHostController, onMedalClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -56,7 +58,7 @@ fun ZoneDetailScreen(zoneName: String, onBack: () -> Unit, onMedalClick: () -> U
             Header(zoneName = zoneName)
 
             // Sección de actividades
-            ActivitiesSection()
+            ActivitiesSection(navController = navController, zoneName = zoneName)
 
             // Sección de medallas
             MedalSection(zoneName = zoneName, onMedalClick = onMedalClick)
@@ -121,40 +123,44 @@ fun Header(zoneName: String) {
 }
 
 @Composable
-fun ActivitiesSection() {
+fun ActivitiesSection(navController: NavHostController, zoneName: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 16.dp)
     ) {
-        // Usando imágenes locales en lugar de íconos
+        // Botón Actividad 1
         ActivityCard(
             color = Color(0xFFE6A957),
-            icon = painterResource(id = R.drawable.calendario), // Reemplaza con el ID de tu imagen
-            text = "Actividad 1"
+            icon = painterResource(id = R.drawable.calendario),
+            text = "Actividad 1",
+            onClick = { navController.navigate("dinosaur/$zoneName") }
         )
         Spacer(modifier = Modifier.height(8.dp))
         ActivityCard(
             color = Color(0xFF6AB98D),
-            icon = painterResource(id = R.drawable.calendario), // Reemplaza con el ID de tu imagen
-            text = "Actividad 2"
+            icon = painterResource(id = R.drawable.calendario),
+            text = "Actividad 2",
+            onClick = { navController.navigate("dinosaur/$zoneName") }
         )
         Spacer(modifier = Modifier.height(8.dp))
         ActivityCard(
             color = Color(0xFF55A8E2),
-            icon = painterResource(id = R.drawable.calendario), // Reemplaza con el ID de tu imagen
-            text = "Actividad 3"
+            icon = painterResource(id = R.drawable.calendario),
+            text = "Actividad 3",
+            onClick = { navController.navigate("dinosaur/$zoneName") }
         )
     }
 }
 
 @Composable
-fun ActivityCard(color: Color, icon: Painter, text: String) {
+fun ActivityCard(color: Color, icon: Painter, text: String, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(color, shape = RoundedCornerShape(12.dp))
-            .padding(16.dp),
+            .padding(16.dp)
+            .clickable(onClick = onClick),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
@@ -182,15 +188,16 @@ fun MedalSection(zoneName: String, onMedalClick: () -> Unit) {
         "Pequeños" -> R.drawable.pequenoslogo
         "Pertenezco" -> R.drawable.pertenezcologo
         "Soy" -> R.drawable.soylogo
-        else -> R.drawable.soylogo
+        else -> R.drawable.soylogo // Imagen por defecto si la zona no coincide
     }
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 16.dp)
-            .background(Color(0x80000000))
+            .background(Color(0x80000000))  //Efecto fondo semi transparente/negro
     ) {
+        // Imagen de fondo
         Image(
             painter = painterResource(id = backgroundImage),
             contentDescription = null,
@@ -198,6 +205,7 @@ fun MedalSection(zoneName: String, onMedalClick: () -> Unit) {
             modifier = Modifier.fillMaxSize()
         )
 
+        // Contenido de medallas encima de la imagen de fondo
         Column(
             modifier = Modifier
                 .fillMaxWidth()

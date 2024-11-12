@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import com.example.papalote.ui.theme.pages.ComunicoScreen
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -45,38 +46,40 @@ fun AppNavigation(navController: NavHostController) {
         // Pantalla de inicio de sesión
         composable("login") {
             LoginScreen(
-                onLoginClick = {
-                    // Aquí puedes definir la acción para iniciar sesión.
-                    navController.navigate("zones") // Navegar a Zonas después de iniciar sesión
-                    // Por ahora, puede estar vacío o puedes navegar a otra pantalla si es necesario
-                },
-                onBack = { navController.navigateUp() } // Navega hacia atrás
+                onLoginClick = { navController.navigate("zones") },
+                onBack = { navController.navigateUp() }
             )
         }
         // Pantalla de registro
         composable("register") {
-            RegisterScreen(
-                onBack = { navController.navigateUp() } // Navega hacia atrás
-            )
+            RegisterScreen(onBack = { navController.navigateUp() })
         }
 
         // Pantalla de Zonas
         composable("zones") {
             ZonasScreen(
-                onZoneClick = { zoneName ->
-                    navController.navigate("zoneDetail/$zoneName") // Navegar a la pantalla de detalle de la zona
-                },
+                onZoneClick = { zoneName -> navController.navigate("zoneDetail/$zoneName") },
                 onBack = { navController.navigateUp() }
             )
         }
         // Pantalla de Detalle de Zona
         composable("zoneDetail/{zoneName}") { backStackEntry ->
             val zoneName = backStackEntry.arguments?.getString("zoneName") ?: "Zona Desconocida"
-            ZoneDetailScreen(zoneName = zoneName, onBack = { navController.navigateUp() }, onMedalClick = { navController.navigate("insignias")})
+            ZoneDetailScreen(
+                zoneName = zoneName,
+                onBack = { navController.navigateUp() },
+                navController = navController,
+                onMedalClick = { navController.navigate("insignias") }
+            )
         }
         // Pantalla de Insignias
         composable("insignias") {
             InsigniasScreen()
+        }
+
+        composable("dinosaur/{zoneName}") { backStackEntry ->
+            val zoneName = backStackEntry.arguments?.getString("zoneName") ?: "Zona Desconocida"
+            ComunicoScreen(zoneName = zoneName, onBack = { navController.navigateUp() })
         }
 
     }
