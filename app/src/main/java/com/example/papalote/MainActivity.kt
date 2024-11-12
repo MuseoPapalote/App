@@ -6,12 +6,14 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import com.example.papalote.ui.theme.pages.ComunicoScreen
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.papalote.ui.theme.PapaloteTheme
+import com.example.papalote.ui.theme.pages.InsigniasScreen
 import com.example.papalote.ui.theme.pages.WelcomeScreen
 import com.example.papalote.ui.theme.pages.LoginScreen
 import com.example.papalote.ui.theme.pages.RegisterScreen
@@ -45,19 +47,13 @@ fun AppNavigation(navController: NavHostController) {
         // Pantalla de inicio de sesión
         composable("login") {
             LoginScreen(
-                onLoginClick = {
-                    // Aquí puedes definir la acción para iniciar sesión.
-                    navController.navigate("zones") // Navegar a Zonas después de iniciar sesión
-                    // Por ahora, puede estar vacío o puedes navegar a otra pantalla si es necesario
-                },
-                onBack = { navController.navigateUp() } // Navega hacia atrás
+                onLoginClick = { navController.navigate("zones") },
+                onBack = { navController.navigateUp() }
             )
         }
         // Pantalla de registro
         composable("register") {
-            RegisterScreen(
-                onBack = { navController.navigateUp() } // Navega hacia atrás
-            )
+            RegisterScreen(onBack = { navController.navigateUp() })
         }
 
         // Pantalla de Zonas
@@ -73,11 +69,26 @@ fun AppNavigation(navController: NavHostController) {
         // Pantalla de Detalle de Zona
         composable("zoneDetail/{zoneName}") { backStackEntry ->
             val zoneName = backStackEntry.arguments?.getString("zoneName") ?: "Zona Desconocida"
-            ZoneDetailScreen(zoneName = zoneName, onBack = { navController.navigateUp() })
+            ZoneDetailScreen(
+                zoneName = zoneName,
+                onBack = { navController.navigateUp() },
+                navController = navController,
+                onMedalClick = { navController.navigate("insignias") }
+            )
+        }
+        // Pantalla de Insignias
+        composable("insignias") {
+            InsigniasScreen()
         }
         // Pantalla de Escaneo de QR
         composable("scanQR") {
             EscaneoQRScreen(navController = navController) // Conecta con tu pantalla EscaneoQR
         }
+
+        composable("dinosaur/{zoneName}") { backStackEntry ->
+            val zoneName = backStackEntry.arguments?.getString("zoneName") ?: "Zona Desconocida"
+            ComunicoScreen(zoneName = zoneName, onBack = { navController.navigateUp() })
+        }
+
     }
 }
