@@ -2,6 +2,7 @@ package com.example.papalote.ui.theme.pages
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,14 +33,16 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.unit.sp
 import com.example.papalote.R
 
+
 @Composable
-fun ZoneDetailScreen(zoneName: String, onBack: () -> Unit, navController: NavHostController) {
+fun ZoneDetailScreen(zoneName: String, onBack: () -> Unit, navController: NavHostController, onMedalClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -58,7 +61,7 @@ fun ZoneDetailScreen(zoneName: String, onBack: () -> Unit, navController: NavHos
             ActivitiesSection(navController = navController, zoneName = zoneName)
 
             // Sección de medallas
-            MedalSection(zoneName = zoneName)
+            MedalSection(zoneName = zoneName, onMedalClick = onMedalClick)
 
             // Barra de navegación inferior
             BottomNavigationBar(onBack = onBack)
@@ -134,8 +137,6 @@ fun ActivitiesSection(navController: NavHostController, zoneName: String) {
             onClick = { navController.navigate("dinosaur/$zoneName") }
         )
         Spacer(modifier = Modifier.height(8.dp))
-
-        // Botón Actividad 2
         ActivityCard(
             color = Color(0xFF6AB98D),
             icon = painterResource(id = R.drawable.calendario),
@@ -143,8 +144,6 @@ fun ActivitiesSection(navController: NavHostController, zoneName: String) {
             onClick = { navController.navigate("dinosaur/$zoneName") }
         )
         Spacer(modifier = Modifier.height(8.dp))
-
-        // Botón Actividad 3
         ActivityCard(
             color = Color(0xFF55A8E2),
             icon = painterResource(id = R.drawable.calendario),
@@ -181,8 +180,7 @@ fun ActivityCard(color: Color, icon: Painter, text: String, onClick: () -> Unit)
 }
 
 @Composable
-fun MedalSection(zoneName: String) {
-    // Selección de la imagen de fondo según el nombre de la zona
+fun MedalSection(zoneName: String, onMedalClick: () -> Unit) {
     val backgroundImage = when (zoneName) {
         "Comprendo" -> R.drawable.comprendologo
         "Comunico" -> R.drawable.comunicologo
@@ -221,9 +219,11 @@ fun MedalSection(zoneName: String) {
                 ) {
                     repeat(4) {
                         Image(
-                            painter = painterResource(id = R.drawable.medalla), // Cambia el ID por la imagen de la medalla
-                            contentDescription = null,
-                            modifier = Modifier.size(68.dp)
+                            painter = painterResource(id = R.drawable.medalla),
+                            contentDescription = "Medalla",
+                            modifier = Modifier
+                                .size(68.dp)
+                                .clickable { onMedalClick() }  // Agrega onClick a la medalla
                         )
                     }
                 }
@@ -232,6 +232,7 @@ fun MedalSection(zoneName: String) {
         }
     }
 }
+
 
 
 @Composable
