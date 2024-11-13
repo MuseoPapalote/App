@@ -4,12 +4,48 @@ import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import com.example.papalote.R
+
+// Definición de la familia de fuentes para Aperçu Pro Black
+val ApercuProBlackFontFamily = FontFamily(
+    Font(R.font.apercu_pro_black, FontWeight.Black)
+)
+
+val ApercuMonoProLightFontFamily = FontFamily(
+    Font(R.font.aperecu_mono_pro_light, FontWeight.Light)
+)
+
+// Define la Typography personalizada
+val CustomTypography = Typography(
+    displayLarge = TextStyle(
+        fontFamily = ApercuProBlackFontFamily,
+        fontWeight = FontWeight.Black,
+        fontSize = 30.sp
+    ),
+    headlineMedium = TextStyle(
+        fontFamily = ApercuProBlackFontFamily,
+        fontWeight = FontWeight.Black,
+        fontSize = 24.sp
+    ),
+    bodyLarge = TextStyle(
+        fontFamily = ApercuProBlackFontFamily,
+        fontWeight = FontWeight.Black,
+        fontSize = 16.sp
+    )
+    // Define más estilos de texto si es necesario
+)
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -52,7 +88,7 @@ fun PapaloteTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = CustomTypography,
         content = content
     )
 }
