@@ -23,9 +23,20 @@ import com.example.papalote.R
 import com.example.papalote.ui.theme.components.CustomBottomBar
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import com.example.papalote.utils.LanguageManager
 
 @Composable
 fun ComunicoScreen(zoneName: String, onBack: () -> Unit, navController: NavHostController) {
+    // Obtener el idioma actual
+    val currentLanguage = LanguageManager.language
+
+    // Textos dependiendo del idioma
+    val dinosaurNameText = if (currentLanguage == "es") "Nombre de este dinosaurio" else "Name of this dinosaur"
+    val answer1 = if (currentLanguage == "es") "Mosasaurio" else "Mosasaurus"
+    val answer2 = if (currentLanguage == "es") "Megalodón" else "Megalodon"
+    val answer3 = if (currentLanguage == "es") "Tiranosaurio Rex" else "Tyrannosaurus Rex"
+    val backButtonText = if (currentLanguage == "es") "Volver" else "Back"
+
     Scaffold(
         bottomBar = {
             CustomBottomBar(navController = navController)
@@ -49,7 +60,7 @@ fun ComunicoScreen(zoneName: String, onBack: () -> Unit, navController: NavHostC
 
             // Imagen del dinosaurio
             Image(
-                painter = painterResource(id = R.drawable.dinosaur_image), // Reemplaza con tu imagen
+                painter = painterResource(id = R.drawable.dinosaur_image),
                 contentDescription = "Dinosaurio",
                 modifier = Modifier
                     .size(250.dp)
@@ -60,7 +71,7 @@ fun ComunicoScreen(zoneName: String, onBack: () -> Unit, navController: NavHostC
 
             // Texto de la pregunta
             Text(
-                text = "Nombre de este dinosaurio",
+                text = dinosaurNameText,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
@@ -73,11 +84,11 @@ fun ComunicoScreen(zoneName: String, onBack: () -> Unit, navController: NavHostC
             Spacer(modifier = Modifier.height(16.dp))
 
             // Botones de respuesta
-            AnswerButton(text = "Mosasaurio")
+            AnswerButton(text = answer1)
             Spacer(modifier = Modifier.height(8.dp))
-            AnswerButton(text = "Megalodón")
+            AnswerButton(text = answer2)
             Spacer(modifier = Modifier.height(8.dp))
-            AnswerButton(text = "Tiranosaurio Rex")
+            AnswerButton(text = answer3)
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -87,7 +98,7 @@ fun ComunicoScreen(zoneName: String, onBack: () -> Unit, navController: NavHostC
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray),
                 modifier = Modifier.padding(vertical = 16.dp)
             ) {
-                Text(text = "Volver", color = Color.White)
+                Text(text = backButtonText, color = Color.White)
             }
         }
     }

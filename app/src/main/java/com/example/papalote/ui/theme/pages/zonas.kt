@@ -10,74 +10,76 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.papalote.R
-import androidx.compose.ui.tooling.preview.Preview
-
 import androidx.navigation.NavHostController
+import com.example.papalote.R
 import com.example.papalote.ui.theme.components.CustomBottomBar
-
-
-
+import com.example.papalote.utils.LanguageManager
 
 @Composable
-fun ZonasScreen(navController:NavHostController,onZoneClick: (String) -> Unit, onBack: () -> Unit){
+fun ZonasScreen(navController: NavHostController, onZoneClick: (String) -> Unit, onBack: () -> Unit) {
+    // Definir los textos dinámicamente según el idioma
+    val titleText = if (LanguageManager.language == "es") "Zonas" else "Zones"
+    val volverText = if (LanguageManager.language == "es") "Volver" else "Back"
+    val gridItems = if (LanguageManager.language == "es") {
+        listOf(
+            Pair("Comprendo", R.drawable.comprendo),
+            Pair("Comunico", R.drawable.comunico),
+            Pair("Expreso", R.drawable.expreso),
+            Pair("Pequeños", R.drawable.pequenos),
+            Pair("Pertenezco", R.drawable.pertenezco),
+            Pair("Soy", R.drawable.soy)
+        )
+    } else {
+        listOf(
+            Pair("Understand", R.drawable.comprendo),
+            Pair("Communicate", R.drawable.comunico),
+            Pair("Express", R.drawable.expreso),
+            Pair("Little Ones", R.drawable.pequenos),
+            Pair("Belong", R.drawable.pertenezco),
+            Pair("I Am", R.drawable.soy)
+        )
+    }
+
     Scaffold(
         bottomBar = {
             // Usamos CustomBottomBar aquí
             CustomBottomBar(navController = navController)
         }
-    ){ paddingValues ->
+    ) { paddingValues ->
         Box(
-            modifier=Modifier
+            modifier = Modifier
                 .fillMaxSize()
                 .background(Color(0xFFD8E56D))
                 .padding(paddingValues),
-            contentAlignment= Alignment.Center
-        ){
-            Column (
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween,
-                modifier= Modifier
+                modifier = Modifier
                     .fillMaxHeight()
                     .padding(vertical = 16.dp)
-
-            ){
+            ) {
                 Text(
-                    text="Zonas",
-                    color= Color(0xFF707070),
+                    text = titleText,
+                    color = Color(0xFF707070),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 20.dp)
                 )
 
-                //Iconos y Etiquetas GRID
-                val items = listOf(
-                    Pair("Comprendo", R.drawable.comprendo), // Reemplaza con tus recursos
-                    Pair("Comunico", R.drawable.comunico),
-                    Pair("Expreso", R.drawable.expreso),
-                    Pair("Pequeños", R.drawable.pequenos),
-                    Pair("Pertenezco", R.drawable.pertenezco),
-                    Pair("Soy", R.drawable.soy)
-                )
-
+                // Iconos y Etiquetas GRID
                 GridLayout(
-                    items = items,
+                    items = gridItems,
                     onZoneClick = onZoneClick
                 )
 
@@ -86,12 +88,11 @@ fun ZonasScreen(navController:NavHostController,onZoneClick: (String) -> Unit, o
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray),
                     modifier = Modifier.wrapContentSize()
                 ) {
-                    Text(text = "Volver", color = Color.White)
+                    Text(text = volverText, color = Color.White)
                 }
             }
         }
     }
-
 }
 
 @Composable
@@ -122,4 +123,3 @@ fun ZoneItem(name: String, icon: Int, onClick: () -> Unit) {
         Text(text = name)
     }
 }
-

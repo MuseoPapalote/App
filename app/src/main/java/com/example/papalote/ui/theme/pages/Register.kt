@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.papalote.R
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.papalote.utils.LanguageManager
 
 @Composable
 fun RegisterScreen(onBack: () -> Unit) {
@@ -29,10 +30,23 @@ fun RegisterScreen(onBack: () -> Unit) {
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
+    // Obtener el idioma actual
+    val currentLanguage = LanguageManager.language
+
+    // Textos dinámicos basados en el idioma
+    val registerTitle = if (currentLanguage == "es") "REGISTRARME" else "REGISTER"
+    val fullNamePlaceholder = if (currentLanguage == "es") "Nombre completo" else "Full Name"
+    val birthDatePlaceholder = if (currentLanguage == "es") "Fecha de nacimiento" else "Birth Date"
+    val usernamePlaceholder = if (currentLanguage == "es") "Usuario" else "Username"
+    val passwordPlaceholder = if (currentLanguage == "es") "Contraseña" else "Password"
+    val registerButtonText = if (currentLanguage == "es") "REGISTRARME" else "REGISTER"
+    val backButtonText = if (currentLanguage == "es") "Volver" else "Back"
+    val socialRegisterText = if (currentLanguage == "es") "O regístrate con" else "Or register with"
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFD8E56D)), // Fondo verde claro
+            .background(Color(0xFFD8E56D)),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -55,7 +69,7 @@ fun RegisterScreen(onBack: () -> Unit) {
                 )
 
                 Text(
-                    text = "REGISTRARME",
+                    text = registerTitle,
                     color = Color(0xFF707070),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
@@ -71,7 +85,7 @@ fun RegisterScreen(onBack: () -> Unit) {
                 InputFieldWithIcon(
                     value = fullName,
                     onValueChange = { fullName = it },
-                    placeholder = "Nombre completo",
+                    placeholder = fullNamePlaceholder,
                     icon = R.drawable.user_icon
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -79,7 +93,7 @@ fun RegisterScreen(onBack: () -> Unit) {
                 InputFieldWithIcon(
                     value = birthDate,
                     onValueChange = { birthDate = it },
-                    placeholder = "Fecha de nacimiento",
+                    placeholder = birthDatePlaceholder,
                     icon = R.drawable.birthday_icon
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -87,7 +101,7 @@ fun RegisterScreen(onBack: () -> Unit) {
                 InputFieldWithIcon(
                     value = username,
                     onValueChange = { username = it },
-                    placeholder = "Usuario",
+                    placeholder = usernamePlaceholder,
                     icon = R.drawable.user_icon
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -95,7 +109,7 @@ fun RegisterScreen(onBack: () -> Unit) {
                 InputFieldWithIcon(
                     value = password,
                     onValueChange = { password = it },
-                    placeholder = "Contraseña",
+                    placeholder = passwordPlaceholder,
                     icon = R.drawable.lock_icon,
                     isPassword = true,
                     passwordVisible = passwordVisible,
@@ -105,7 +119,7 @@ fun RegisterScreen(onBack: () -> Unit) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Botón de "REGISTRARME" con gradiente
+            // Botón de registro
             Button(
                 onClick = { /* Lógica de registro */ },
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
@@ -127,7 +141,7 @@ fun RegisterScreen(onBack: () -> Unit) {
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "REGISTRARME",
+                        text = registerButtonText,
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
@@ -137,7 +151,7 @@ fun RegisterScreen(onBack: () -> Unit) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Botón de "Volver"
+            // Botón de volver
             Button(
                 onClick = { onBack() },
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray),
@@ -145,12 +159,12 @@ fun RegisterScreen(onBack: () -> Unit) {
                     .wrapContentSize()
                     .padding(bottom = 20.dp)
             ) {
-                Text(text = "Volver", color = Color.White)
+                Text(text = backButtonText, color = Color.White)
             }
 
-            // Texto de "O regístrate con"
+            // Texto de registro social
             Text(
-                text = "O regístrate con",
+                text = socialRegisterText,
                 color = Color(0xFF707070),
                 fontSize = 14.sp,
                 modifier = Modifier.padding(bottom = 10.dp)
@@ -176,26 +190,6 @@ fun RegisterScreen(onBack: () -> Unit) {
                         .size(40.dp)
                         .padding(start = 20.dp),
                     contentScale = ContentScale.Fit
-                )
-            }
-
-            // Banderas de idioma
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.mexico_flag),
-                    contentDescription = "Bandera de México",
-                    modifier = Modifier.size(48.dp).padding(end = 16.dp)
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.usa_flag),
-                    contentDescription = "Bandera de EE. UU.",
-                    modifier = Modifier.size(48.dp).padding(start = 16.dp)
                 )
             }
         }

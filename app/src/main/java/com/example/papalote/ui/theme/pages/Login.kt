@@ -2,6 +2,7 @@ package com.example.papalote.ui.theme.pages
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
@@ -18,6 +19,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.papalote.R
+import com.example.papalote.utils.LanguageManager
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -26,23 +28,30 @@ fun LoginScreen(onLoginClick: () -> Unit, onBack: () -> Unit) {
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
+    // Texto para los elementos de la pantalla según el idioma
+    val loginText = if (LanguageManager.language == "es") "INICIAR SESIÓN" else "LOGIN"
+    val usernamePlaceholder = if (LanguageManager.language == "es") "USUARIO" else "USERNAME"
+    val passwordPlaceholder = if (LanguageManager.language == "es") "CONTRASEÑA" else "PASSWORD"
+    val enterText = if (LanguageManager.language == "es") "ENTRAR" else "ENTER"
+    val forgotPasswordText = if (LanguageManager.language == "es") "¿Olvidaste tu contraseña?" else "Forgot your password?"
+    val registerText = if (LanguageManager.language == "es") "Registrarme" else "Register"
+    val backText = if (LanguageManager.language == "es") "Volver" else "Back"
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFD8E56D)), // Fondo verde claro
+            .background(Color(0xFFD8E56D)),
         contentAlignment = Alignment.Center
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween, // Distribuye los elementos para que las banderas queden en el fondo
+            verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxHeight()
                 .padding(vertical = 16.dp)
         ) {
             // Parte superior: Logo y título
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Image(
                     painter = painterResource(id = R.drawable.papalotelogoo),
                     contentDescription = "Logo",
@@ -52,7 +61,7 @@ fun LoginScreen(onLoginClick: () -> Unit, onBack: () -> Unit) {
                 )
 
                 Text(
-                    text = "INICIAR SESIÓN",
+                    text = loginText,
                     color = Color(0xFF707070),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
@@ -84,7 +93,7 @@ fun LoginScreen(onLoginClick: () -> Unit, onBack: () -> Unit) {
                         onValueChange = { username = it },
                         modifier = Modifier.weight(1f),
                         decorationBox = { innerTextField ->
-                            if (username.isEmpty()) Text("USUARIO", color = Color(0xFFCCCCCC))
+                            if (username.isEmpty()) Text(usernamePlaceholder, color = Color(0xFFCCCCCC))
                             innerTextField()
                         }
                     )
@@ -111,7 +120,7 @@ fun LoginScreen(onLoginClick: () -> Unit, onBack: () -> Unit) {
                         modifier = Modifier.weight(1f),
                         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         decorationBox = { innerTextField ->
-                            if (password.isEmpty()) Text("CONTRASEÑA", color = Color(0xFFCCCCCC))
+                            if (password.isEmpty()) Text(passwordPlaceholder, color = Color(0xFFCCCCCC))
                             innerTextField()
                         }
                     )
@@ -140,7 +149,7 @@ fun LoginScreen(onLoginClick: () -> Unit, onBack: () -> Unit) {
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "ENTRAR",
+                            text = enterText,
                             color = Color.White,
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp
@@ -156,20 +165,20 @@ fun LoginScreen(onLoginClick: () -> Unit, onBack: () -> Unit) {
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray),
                     modifier = Modifier.wrapContentSize()
                 ) {
-                    Text(text = "Volver", color = Color.White)
+                    Text(text = backText, color = Color.White)
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "¿Olvidaste tu contraseña?",
+                    text = forgotPasswordText,
                     color = Color(0xFF707070),
                     fontSize = 14.sp,
                     modifier = Modifier.padding(bottom = 20.dp)
                 )
 
                 Text(
-                    text = "Registrarme",
+                    text = registerText,
                     color = Color(0xFF707070),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold
@@ -184,16 +193,8 @@ fun LoginScreen(onLoginClick: () -> Unit, onBack: () -> Unit) {
                     .fillMaxWidth()
                     .padding(bottom = 16.dp)
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.mexico_flag),
-                    contentDescription = "Bandera de México",
-                    modifier = Modifier.size(48.dp).padding(end = 16.dp)
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.usa_flag),
-                    contentDescription = "Bandera de EE. UU.",
-                    modifier = Modifier.size(48.dp).padding(start = 16.dp)
-                )
+
+
             }
         }
     }
