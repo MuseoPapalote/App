@@ -100,5 +100,9 @@ fun AppNavigation(navController: NavHostController) {
                 navController = navController
             )
         }
+        // Pantalla de Mapa
+        composable("mapa") {
+            MapaScreen() // Llama al Composable que contiene la pantalla del mapa
+        }
     }
 }
