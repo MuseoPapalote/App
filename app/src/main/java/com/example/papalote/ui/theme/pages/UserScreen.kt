@@ -71,7 +71,7 @@ fun UserProfileScreen() {
         Spacer(modifier = Modifier.height(16.dp))
 
         // Información del usuario
-        UserInfoItem(icon = R.drawable.ic_user, label = "Héctor de Jesús Taméz Treviño")
+        UserInfoItem(icon = R.drawable.userscc, label = "Héctor de Jesús Taméz Treviño")
         UserInfoItem(icon = R.drawable.ic_calendar, label = "29 de febrero 2008")
         UserInfoItem(icon = R.drawable.ic_email, label = "xXHectorXx@hotmail.com", editable = true)
         UserInfoItem(icon = R.drawable.ic_lock, label = "************", editable = true)
@@ -128,7 +128,7 @@ fun InsigniasInfo() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.ic_medal), // Cambia al ícono de medalla
+            painter = painterResource(id = R.drawable.medalla), // Cambia al ícono de medalla
             contentDescription = "Medalla",
             tint = Color(0xFFFFC107),
             modifier = Modifier.size(24.dp)
