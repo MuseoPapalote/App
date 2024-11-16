@@ -1,5 +1,6 @@
 package com.example.papalote.ui.theme.pages
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,6 +30,7 @@ import com.example.papalote.R
 
 @Composable
 fun UserProfileScreen() {
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -37,13 +39,15 @@ fun UserProfileScreen() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Título
-        Text(
+        /*Text(
             text = "toco juego y aprendo",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = Color.White,
             modifier = Modifier.padding(16.dp)
-        )
+        )*/
+        HeaderWithLogoo()
+        Spacer(modifier = Modifier.height(16.dp))
 
         // Imagen de usuario
         Box(
@@ -65,9 +69,9 @@ fun UserProfileScreen() {
         // Nombre del usuario
         Text(
             text = "USUARIO",
-            fontSize = 20.sp,
+            fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black
+            color = Color.White
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -84,7 +88,22 @@ fun UserProfileScreen() {
         InsigniasInfo()
     }
 }
-
+@Composable
+fun HeaderWithLogoo() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color(0xFFC2D401))
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.tocojuegoyaprendo),
+            contentDescription = "Logo del Museo",
+            modifier = Modifier.width(370.dp)
+        )
+    }
+}
 @Composable
 fun UserInfoItem(icon: Int, label: String, editable: Boolean = false) {
     Row(
