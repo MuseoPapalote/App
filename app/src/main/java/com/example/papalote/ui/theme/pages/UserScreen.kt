@@ -72,9 +72,9 @@ fun UserProfileScreen() {
 
         // Información del usuario
         UserInfoItem(icon = R.drawable.userscc, label = "Héctor de Jesús Taméz Treviño")
-        UserInfoItem(icon = R.drawable.ic_calendar, label = "29 de febrero 2008")
-        UserInfoItem(icon = R.drawable.ic_email, label = "xXHectorXx@hotmail.com", editable = true)
-        UserInfoItem(icon = R.drawable.ic_lock, label = "************", editable = true)
+        UserInfoItem(icon = R.drawable.birthday_icon, label = "29 de febrero 2008")
+        UserInfoItem(icon = R.drawable.lock_icon, label = "xXHectorXx@hotmail.com", editable = true)
+        UserInfoItem(icon = R.drawable.lock_icon, label = "************", editable = true)
 
         Spacer(modifier = Modifier.height(16.dp))
 
