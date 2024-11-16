@@ -21,9 +21,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.papalote.R
+
 
 @Composable
 fun UserProfileScreen() {
@@ -51,7 +53,7 @@ fun UserProfileScreen() {
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_user), // Cambia por el ícono adecuado
+                painter = painterResource(id = R.drawable.userscc), // Cambia por el ícono adecuado
                 contentDescription = "Usuario",
                 modifier = Modifier.size(64.dp),
                 tint = Color.Gray
@@ -108,7 +110,7 @@ fun UserInfoItem(icon: Int, label: String, editable: Boolean = false) {
         )
         if (editable) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_edit), // Ícono de edición
+                painter = painterResource(id = R.drawable.editar), // Ícono de edición
                 contentDescription = "Editar",
                 tint = Color.Gray,
                 modifier = Modifier.size(24.dp)
