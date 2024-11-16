@@ -1,5 +1,6 @@
 package com.example.papalote.states
 
+
 sealed class RegistrationState {
     data object Idle : RegistrationState()
     data object Loading : RegistrationState()

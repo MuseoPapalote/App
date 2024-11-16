@@ -86,3 +86,9 @@ data class EncuestaResponse(
     val fecha_encuesta: Date,
     val respondido: Boolean = false
 )
+
+data class UserResponse(
+    val name: String,
+    val email: String,
+    val birthDate: Date // Asegúrate de manejar este tipo correctamente
+)

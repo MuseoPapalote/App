@@ -6,6 +6,7 @@ import com.example.papalote.RegisterResponse
 import com.example.papalote.RetrofitClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import com.example.papalote.UserResponse
 
 class Repository {
     private val apiService = RetrofitClient.apiService
@@ -39,5 +40,20 @@ class Repository {
             }
         }
     }
+    suspend fun getUserInfo(): Result<UserResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = apiService.getUserInfo()
+                if (response.isSuccessful) {
+                    Result.success(response.body()!!)
+                } else {
+                    Result.failure(Exception("Failed to fetch user info: ${response.message()}"))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
+
 
 }
