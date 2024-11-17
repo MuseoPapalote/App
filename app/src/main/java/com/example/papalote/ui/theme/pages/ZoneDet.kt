@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.papalote.R
 import com.example.papalote.ui.theme.components.CustomBottomBar
+import com.example.papalote.utils.LanguageManager
 
 @Composable
 fun ZoneDetailScreen(
@@ -74,6 +75,9 @@ fun HeaderWithLogo() {
 
 @Composable
 fun Header(zoneName: String) {
+    // Definir los textos según el idioma seleccionado
+    val activitiesText = if (LanguageManager.language == "es") "Actividades del día" else "Today's Activities"
+
     val titleColor = when (zoneName) {
         "Comunico" -> Color(0xFF016ED2)
         "Pertenezco" -> Color(0xFFC2D401)
@@ -98,7 +102,7 @@ fun Header(zoneName: String) {
             modifier = Modifier.padding(vertical = 8.dp)
         )
         Text(
-            text = "Actividades del día",
+            text = activitiesText,
             fontSize = 16.sp,
             color = Color.Black,
             modifier = Modifier.padding(bottom = 8.dp)
@@ -108,6 +112,11 @@ fun Header(zoneName: String) {
 
 @Composable
 fun ActivitiesSection(navController: NavHostController, zoneName: String) {
+    // Definir los textos según el idioma seleccionado
+    val activity1Text = if (LanguageManager.language == "es") "Actividad 1" else "Activity 1"
+    val activity2Text = if (LanguageManager.language == "es") "Actividad 2" else "Activity 2"
+    val activity3Text = if (LanguageManager.language == "es") "Actividad 3" else "Activity 3"
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -116,21 +125,21 @@ fun ActivitiesSection(navController: NavHostController, zoneName: String) {
         ActivityCard(
             color = Color(0xFFE6A957),
             icon = painterResource(id = R.drawable.calendario),
-            text = "Actividad 1",
+            text = activity1Text,
             onClick = { navController.navigate("dinosaur/$zoneName") }
         )
         Spacer(modifier = Modifier.height(8.dp))
         ActivityCard(
             color = Color(0xFF6AB98D),
             icon = painterResource(id = R.drawable.calendario),
-            text = "Actividad 2",
+            text = activity2Text,
             onClick = { navController.navigate("dinosaur/$zoneName") }
         )
         Spacer(modifier = Modifier.height(8.dp))
         ActivityCard(
             color = Color(0xFF55A8E2),
             icon = painterResource(id = R.drawable.calendario),
-            text = "Actividad 3",
+            text = activity3Text,
             onClick = { navController.navigate("dinosaur/$zoneName") }
         )
     }

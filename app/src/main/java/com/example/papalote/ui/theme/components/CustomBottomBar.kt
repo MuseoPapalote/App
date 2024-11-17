@@ -46,11 +46,11 @@ fun CustomBottomBar(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Ícono de Buscar
-            IconButton(onClick = { navController.navigate("search") }) {
+            // Ícono de Mapa
+            IconButton(onClick = { navController.navigate("mapa") }) { // Cambiamos "search" por "mapa"
                 Icon(
                     painter = painterResource(id = R.drawable.map),
-                    contentDescription = "Buscar",
+                    contentDescription = "Mapa",
                     tint = Color.White,
                     modifier = Modifier.size(48.dp)
                 )

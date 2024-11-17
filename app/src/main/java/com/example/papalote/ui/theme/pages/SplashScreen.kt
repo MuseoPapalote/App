@@ -23,7 +23,7 @@ fun SplashScreen(navController: NavHostController) {
     // Navegar automáticamente después de 3 segundos
     LaunchedEffect(key1 = true) {
         delay(3000) // Espera 5 segundos
-        navController.navigate("login") {
+        navController.navigate("Welcome") {
             popUpTo("splash") { inclusive = true } // Elimina la pantalla de splash del back stack
         }
     }

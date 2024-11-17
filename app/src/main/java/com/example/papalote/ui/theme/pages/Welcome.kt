@@ -2,6 +2,7 @@ package com.example.papalote.ui.theme.pages
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ButtonDefaults
@@ -18,9 +19,14 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.papalote.R
 import com.example.papalote.ui.theme.PapaloteTheme
+import com.example.papalote.utils.LanguageManager
 
 @Composable
 fun WelcomeScreen(onLoginClicked: () -> Unit, onRegisterClicked: () -> Unit) {
+    // Definir los textos según el idioma seleccionado
+    val loginText = if (LanguageManager.language == "es") "Iniciar Sesión" else "Log In"
+    val registerText = if (LanguageManager.language == "es") "Registrarse" else "Register"
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -46,7 +52,7 @@ fun WelcomeScreen(onLoginClicked: () -> Unit, onRegisterClicked: () -> Unit) {
 
             // Botón de Iniciar Sesión
             GradientButton(
-                text = "Iniciar Sesión",
+                text = loginText,
                 onClick = onLoginClicked
             )
 
@@ -54,9 +60,41 @@ fun WelcomeScreen(onLoginClicked: () -> Unit, onRegisterClicked: () -> Unit) {
 
             // Botón de Registrarse
             GradientButton(
-                text = "Registrarse",
+                text = registerText,
                 onClick = onRegisterClicked
             )
+
+            Spacer(modifier = Modifier.height(50.dp))
+
+            // Banderas de idioma
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.mexico_flag),
+                    contentDescription = "Español",
+                    modifier = Modifier
+                        .size(48.dp)
+                        .padding(end = 16.dp)
+                        .clickable {
+                            LanguageManager.changeLanguage("es")
+                        }
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.usa_flag),
+                    contentDescription = "Inglés",
+                    modifier = Modifier
+                        .size(48.dp)
+                        .padding(start = 16.dp)
+                        .clickable {
+                            LanguageManager.changeLanguage("en")
+                        }
+                )
+            }
         }
     }
 }

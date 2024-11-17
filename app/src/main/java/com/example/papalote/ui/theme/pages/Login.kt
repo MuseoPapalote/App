@@ -3,6 +3,7 @@ package com.example.papalote.ui.theme.pages
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
@@ -20,6 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.papalote.R
+import com.example.papalote.utils.LanguageManager
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.papalote.states.LoginState
 import com.example.papalote.viewModel.LoginViewModel
 import java.security.MessageDigest
@@ -93,6 +96,15 @@ fun LoginScreen(
         }
     }
 
+    // Texto para los elementos de la pantalla según el idioma
+    val loginText = if (LanguageManager.language == "es") "INICIAR SESIÓN" else "LOGIN"
+    val usernamePlaceholder = if (LanguageManager.language == "es") "USUARIO" else "USERNAME"
+    val passwordPlaceholder = if (LanguageManager.language == "es") "CONTRASEÑA" else "PASSWORD"
+    val enterText = if (LanguageManager.language == "es") "ENTRAR" else "ENTER"
+    val forgotPasswordText = if (LanguageManager.language == "es") "¿Olvidaste tu contraseña?" else "Forgot your password?"
+    val registerText = if (LanguageManager.language == "es") "Registrarme" else "Register"
+    val backText = if (LanguageManager.language == "es") "Volver" else "Back"
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -101,7 +113,7 @@ fun LoginScreen(
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween, // Distribuye los elementos para que las banderas queden en el fondo
+            verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxHeight()
                 .padding(vertical = 16.dp)
@@ -116,7 +128,7 @@ fun LoginScreen(
                         .padding(bottom = 20.dp)
                 )
                 Text(
-                    text = "INICIAR SESIÓN",
+                    text = loginText,
                     color = Color(0xFF707070),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
@@ -176,7 +188,12 @@ fun LoginScreen(
                             .fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(text = "ENTRAR", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                        Text(
+                            text = enterText,
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp
+                        )
                     }
                 }
 
@@ -184,25 +201,27 @@ fun LoginScreen(
                     Text(text = errorMessage, color = Color.Red, fontSize = 14.sp, modifier = Modifier.padding(top = 8.dp))
                 }
                 Spacer(modifier = Modifier.height(16.dp))
+
+                // Botón de "Volver"
                 Button(
                     onClick = { onBack() },
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray),
                     modifier = Modifier.wrapContentSize()
                 ) {
-                    Text(text = "Volver", color = Color.White)
+                    Text(text = backText, color = Color.White)
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "¿Olvidaste tu contraseña?",
+                    text = forgotPasswordText,
                     color = Color(0xFF707070),
                     fontSize = 14.sp,
                     modifier = Modifier.padding(bottom = 20.dp)
                 )
 
                 Text(
-                    text = "Registrarme",
+                    text = registerText,
                     color = Color(0xFF707070),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold
@@ -217,18 +236,15 @@ fun LoginScreen(
                     .fillMaxWidth()
                     .padding(bottom = 16.dp)
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.mexico_flag),
-                    contentDescription = "Bandera de México",
-                    modifier = Modifier.size(48.dp).padding(end = 16.dp)
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.usa_flag),
-                    contentDescription = "Bandera de EE. UU.",
-                    modifier = Modifier.size(48.dp).padding(start = 16.dp)
-                )
-            }
 
+
+            }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun LoginScreenPreview() {
+    //LoginScreen(onLoginClick = {}, onBack = {})
 }

@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.papalote.R
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.papalote.utils.LanguageManager
 import java.security.MessageDigest
 import kotlin.text.Charsets.UTF_8
 import androidx.compose.runtime.Composable
@@ -54,6 +55,19 @@ fun RegisterScreen(
     var password by remember { mutableStateOf("") }
     var hashedPass by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
+
+    // Obtener el idioma actual
+    val currentLanguage = LanguageManager.language
+
+    // Textos dinámicos basados en el idioma
+    val registerTitle = if (currentLanguage == "es") "REGISTRARME" else "REGISTER"
+    val fullNamePlaceholder = if (currentLanguage == "es") "Nombre completo" else "Full Name"
+    val birthDatePlaceholder = if (currentLanguage == "es") "Fecha de nacimiento" else "Birth Date"
+    val usernamePlaceholder = if (currentLanguage == "es") "Usuario" else "Username"
+    val passwordPlaceholder = if (currentLanguage == "es") "Contraseña" else "Password"
+    val registerButtonText = if (currentLanguage == "es") "REGISTRARME" else "REGISTER"
+    val backButtonText = if (currentLanguage == "es") "Volver" else "Back"
+    val socialRegisterText = if (currentLanguage == "es") "O regístrate con" else "Or register with"
 
     val registrationState by viewModel.registrationState.collectAsState()
     var showLoadingDialog by remember { mutableStateOf(false) }
@@ -138,7 +152,7 @@ fun RegisterScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFD8E56D)),
+            .background(Color(0xFFD8E56D)), // Fondo verde claro
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -161,7 +175,7 @@ fun RegisterScreen(
                 )
 
                 Text(
-                    text = "REGISTRARME",
+                    text = registerTitle,
                     color = Color(0xFF707070),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
@@ -212,7 +226,7 @@ fun RegisterScreen(
                         username = it
                         showError = false
                     },
-                    placeholder = "Usuario",
+                    placeholder = usernamePlaceholder,
                     icon = R.drawable.user_icon
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -223,7 +237,7 @@ fun RegisterScreen(
                         password = it
                         showError = false
                     },
-                    placeholder = "Contraseña",
+                    placeholder = passwordPlaceholder,
                     icon = R.drawable.lock_icon,
                     isPassword = true,
                     passwordVisible = passwordVisible,
@@ -242,7 +256,7 @@ fun RegisterScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Register button
+            // Botón de "REGISTRARME" con gradiente
             Button(
                 onClick = {
                     if (validateFields()) {
@@ -274,7 +288,7 @@ fun RegisterScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "REGISTRARME",
+                        text = registerButtonText,
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
@@ -303,7 +317,7 @@ fun RegisterScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Back button
+            // Botón de volver
             Button(
                 onClick = { onBack() },
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray),
@@ -311,17 +325,18 @@ fun RegisterScreen(
                     .wrapContentSize()
                     .padding(bottom = 20.dp)
             ) {
-                Text(text = "Volver", color = Color.White)
+                Text(text = backButtonText, color = Color.White)
             }
 
-            // Social login section
+            // Texto de registro social
             Text(
-                text = "O regístrate con",
+                text = socialRegisterText,
                 color = Color(0xFF707070),
                 fontSize = 14.sp,
                 modifier = Modifier.padding(bottom = 10.dp)
             )
 
+            // Iconos de redes sociales
             Row(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxWidth()
@@ -341,26 +356,6 @@ fun RegisterScreen(
                         .size(40.dp)
                         .padding(start = 20.dp),
                     contentScale = ContentScale.Fit
-                )
-            }
-
-            // Language flags
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.mexico_flag),
-                    contentDescription = "Bandera de México",
-                    modifier = Modifier.size(48.dp).padding(end = 16.dp)
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.usa_flag),
-                    contentDescription = "Bandera de EE. UU.",
-                    modifier = Modifier.size(48.dp).padding(start = 16.dp)
                 )
             }
         }
@@ -402,4 +397,10 @@ fun InputFieldWithIcon(
             }
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun RegisterScreenPreview() {
+    //RegisterScreen(onBack = {})
 }

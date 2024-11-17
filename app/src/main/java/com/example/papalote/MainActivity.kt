@@ -105,5 +105,14 @@ fun AppNavigation(navController: NavHostController) {
                 navController = navController
             )
         }
+        // Pantalla de Mapa
+        composable("mapa") {
+            MapaScreen() // Llama al Composable que contiene la pantalla del mapa
+        }
+        // Pantalla de Perfil
+        composable("profile") {
+            UserProfileScreen() // Llama al Composable que contiene la pantalla del perfil
+        }
+
     }
 }

@@ -20,22 +20,33 @@ import androidx.navigation.NavHostController
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
+import com.example.papalote.utils.LanguageManager
 
 @OptIn(ExperimentalMaterial3Api::class)
-
 @Composable
 fun EscaneoQRScreen(navController: NavHostController) {
     val context = LocalContext.current
     var scanResult by remember { mutableStateOf<String?>(null) }
     var showError by remember { mutableStateOf(false) }
 
+    // Obtener el idioma actual
+    val currentLanguage = LanguageManager.language
+
+    // Textos dinámicos basados en el idioma
+    val screenTitle = if (currentLanguage == "es") "Escaneo de QR" else "QR Scan"
+    val scanButtonText = if (currentLanguage == "es") "Escanear Código QR" else "Scan QR Code"
+    val qrContentText = if (currentLanguage == "es") "Contenido del QR:" else "QR Content:"
+    val openBrowserText = if (currentLanguage == "es") "Abrir en Navegador" else "Open in Browser"
+    val errorText = if (currentLanguage == "es") "Error al escanear el código QR." else "Error scanning the QR code."
+    val backButtonText = if (currentLanguage == "es") "Volver al Menú" else "Back to Menu"
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Escaneo de QR") },
+                title = { Text(screenTitle) },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) { // Usa el NavController para regresar
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
+                    IconButton(onClick = { navController.navigateUp() }) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = if (currentLanguage == "es") "Volver" else "Back")
                     }
                 }
             )
@@ -55,20 +66,20 @@ fun EscaneoQRScreen(navController: NavHostController) {
                 scanResult = result
                 showError = error
             } }) {
-                Text("Escanear Código QR")
+                Text(scanButtonText)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             // Mostrar el resultado del QR
             if (scanResult != null) {
-                Text("Contenido del QR: $scanResult", style = MaterialTheme.typography.bodyLarge)
+                Text("$qrContentText $scanResult", style = MaterialTheme.typography.bodyLarge)
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(onClick = {
                     val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(scanResult))
                     context.startActivity(browserIntent)
                 }) {
-                    Text("Abrir en Navegador")
+                    Text(openBrowserText)
                 }
             }
 
@@ -76,7 +87,7 @@ fun EscaneoQRScreen(navController: NavHostController) {
             if (showError) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "Error al escanear el código QR.",
+                    text = errorText,
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.error
                 )
@@ -85,8 +96,8 @@ fun EscaneoQRScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             // Botón para regresar al menú principal
-            Button(onClick = { navController.navigate("welcome") }) { // Navega de vuelta a la pantalla "welcome"
-                Text("Volver al Menú")
+            Button(onClick = { navController.navigate("welcome") }) {
+                Text(backButtonText)
             }
         }
     }

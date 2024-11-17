@@ -19,9 +19,20 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.papalote.R
 import com.example.papalote.ui.theme.components.CustomBottomBar
+import com.example.papalote.utils.LanguageManager
 
 @Composable
 fun InsigniasScreen(navController: NavHostController) {
+    // Obtener el idioma actual
+    val currentLanguage = LanguageManager.language
+
+    // Textos dependiendo del idioma
+    val titleText = if (currentLanguage == "es") "Insignias" else "Badges"
+    val badge1 = if (currentLanguage == "es") "Zona Completa" else "Completed Zone"
+    val badge2 = if (currentLanguage == "es") "Animales encontrados" else "Animals Found"
+    val badge3 = if (currentLanguage == "es") "3 zonas completadas" else "3 Zones Completed"
+    val badge4 = if (currentLanguage == "es") "Expreso Completado" else "Express Completed"
+
     Scaffold(
         bottomBar = {
             CustomBottomBar(navController = navController)
@@ -38,7 +49,7 @@ fun InsigniasScreen(navController: NavHostController) {
             TopBanner()
             Spacer(modifier = Modifier.height(24.dp))
             Text(
-                text = "Insignias",
+                text = titleText,
                 fontSize = 35.sp,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold,
@@ -47,7 +58,7 @@ fun InsigniasScreen(navController: NavHostController) {
             )
 
             // Badges Grid
-            BadgesGrid()
+            BadgesGrid(badge1, badge2, badge3, badge4)
 
             Spacer(modifier = Modifier.weight(1f))
 
@@ -75,22 +86,22 @@ fun TopBanner() {
 }
 
 @Composable
-fun BadgesGrid() {
+fun BadgesGrid(badge1: String, badge2: String, badge3: String, badge4: String) {
     Column {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround
         ) {
-            BadgeItem("Zona Completa")
-            BadgeItem("Animales encontrados")
+            BadgeItem(badge1)
+            BadgeItem(badge2)
         }
         Spacer(modifier = Modifier.height(16.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround
         ) {
-            BadgeItem("3 zonas completadas")
-            BadgeItem("Expreso Completado")
+            BadgeItem(badge3)
+            BadgeItem(badge4)
         }
     }
 }
