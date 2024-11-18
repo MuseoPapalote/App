@@ -54,7 +54,17 @@ dependencies {
     implementation("com.google.android.gms:play-services-code-scanner:16.1.0")
 
     // Añadir esta línea para tener acceso a Button y Text
-    implementation("androidx.compose.material:material:1.5.1")
+    //implementation("androidx.compose.material:material:1.5.1")
+    //implementation(libs.androidx.datastore.preferences.v100)
+    //implementation(libs.hilt.android)
+    //implementation(libs.androidx.material)
+    //implementation(libs.androidx.datastore.preferences)
+    implementation (libs.jbcrypt)
+    implementation (libs.androidx.security.crypto)
+    implementation (libs.retrofit)
+    implementation (libs.converter.gson)
+    implementation (libs.kotlinx.coroutines.android)
+    implementation (libs.androidx.lifecycle.viewmodel.compose)
 
     // Dependencias existentes
     implementation(libs.androidx.core.ktx)

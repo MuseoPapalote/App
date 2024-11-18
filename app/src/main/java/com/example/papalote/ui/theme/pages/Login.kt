@@ -1,3 +1,4 @@
+// LoginScreen.kt
 package com.example.papalote.ui.theme.pages
 
 import androidx.compose.foundation.Image
@@ -18,15 +19,91 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.papalote.R
 import com.example.papalote.utils.LanguageManager
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.papalote.states.LoginState
+import com.example.papalote.viewModel.LoginViewModel
+import java.security.MessageDigest
+import kotlin.text.Charsets.UTF_8
+import com.example.papalote.utils.TokenManager
+import com.example.papalote.viewModelFactory.LoginViewModelFactory
+import com.example.papalote.api.Repository
+import com.example.papalote.RetrofitClient
 
 @Composable
-fun LoginScreen(onLoginClick: () -> Unit, onBack: () -> Unit) {
-    var username by remember { mutableStateOf("") }
+fun LoginScreen(
+    tokenManager: TokenManager,
+    viewModel: LoginViewModel = viewModel(),
+    onLoginSuccess: () -> Unit,
+    onBack: () -> Unit
+) {
+    fun hashPassword(password: String): String {
+        val bytes = password.toByteArray(UTF_8)
+        val md = MessageDigest.getInstance("SHA-256")
+        val digest = md.digest(bytes)
+        return digest.fold("") { str, it -> str + "%02x".format(it) }
+    }
+
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var hashedPass by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
+    var showLoadingDialog by remember { mutableStateOf(false) }
+    var showError by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
+
+    // Observa el estado del login
+    val loginState by viewModel.loginState.collectAsState()
+
+    fun isValidEmail(email: String): Boolean{
+        val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$"
+        return email.matches(emailRegex.toRegex())
+    }
+
+    fun validateFields(): Boolean{
+        return when{
+            email.isBlank() -> {
+                errorMessage = "El campo de correo está vacío"
+                false
+            }
+            !isValidEmail(email) -> {
+                errorMessage = "El correo no es válido"
+                false
+            }
+            password.isBlank() -> {
+                errorMessage = "El campo de contraseña está vacío"
+                false
+            }
+            else -> true
+        }
+    }
+
+    LaunchedEffect(loginState) {
+        when (loginState) {
+            is LoginState.Loading -> {
+                showLoadingDialog = true
+            }
+            is LoginState.Success -> {
+                showLoadingDialog = false
+                onLoginSuccess()
+            }
+            is LoginState.Error -> {
+                showError = true
+                errorMessage = (loginState as LoginState.Error).message
+            }
+            else -> {
+                showLoadingDialog = false
+                showError = false
+            }
+        }
+    }
+    val repository = Repository(RetrofitClient.apiService, tokenManager) // Crear el Repository
+
+    val viewModel: LoginViewModel = viewModel(
+        factory = LoginViewModelFactory(repository) // Usamos la fábrica personalizada
+    )
 
     // Texto para los elementos de la pantalla según el idioma
     val loginText = if (LanguageManager.language == "es") "INICIAR SESIÓN" else "LOGIN"
@@ -40,7 +117,7 @@ fun LoginScreen(onLoginClick: () -> Unit, onBack: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFD8E56D)),
+            .background(Color(0xFFD8E56D)), //Fondo verde claro
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -50,7 +127,7 @@ fun LoginScreen(onLoginClick: () -> Unit, onBack: () -> Unit) {
                 .fillMaxHeight()
                 .padding(vertical = 16.dp)
         ) {
-            // Parte superior: Logo y título
+            //Parte superior: Logo y título
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Image(
                     painter = painterResource(id = R.drawable.papalotelogoo),
@@ -59,7 +136,6 @@ fun LoginScreen(onLoginClick: () -> Unit, onBack: () -> Unit) {
                         .size(150.dp)
                         .padding(bottom = 20.dp)
                 )
-
                 Text(
                     text = loginText,
                     color = Color(0xFF707070),
@@ -69,67 +145,40 @@ fun LoginScreen(onLoginClick: () -> Unit, onBack: () -> Unit) {
                 )
             }
 
-            // Campos de usuario y contraseña
+            //Campos de usuario y contraseña
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 32.dp)
-                        .background(Color.White, shape = CircleShape)
-                        .padding(horizontal = 12.dp, vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.user_icon),
-                        contentDescription = "Usuario",
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    BasicTextField(
-                        value = username,
-                        onValueChange = { username = it },
-                        modifier = Modifier.weight(1f),
-                        decorationBox = { innerTextField ->
-                            if (username.isEmpty()) Text(usernamePlaceholder, color = Color(0xFFCCCCCC))
-                            innerTextField()
-                        }
-                    )
-                }
+                InputFieldWithIcon(
+                    value = email,
+                    onValueChange = { email = it },
+                    placeholder = "CORREO",
+                    icon = R.drawable.user_icon
+                )
                 Spacer(modifier = Modifier.height(16.dp))
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 32.dp)
-                        .background(Color.White, shape = CircleShape)
-                        .padding(horizontal = 12.dp, vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.lock_icon),
-                        contentDescription = "Candado",
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    BasicTextField(
-                        value = password,
-                        onValueChange = { password = it },
-                        modifier = Modifier.weight(1f),
-                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                        decorationBox = { innerTextField ->
-                            if (password.isEmpty()) Text(passwordPlaceholder, color = Color(0xFFCCCCCC))
-                            innerTextField()
-                        }
-                    )
-                }
-
+                InputFieldWithIcon(
+                    value = password,
+                    onValueChange = { password = it },
+                    placeholder = "CONTRASEÑA",
+                    icon = R.drawable.lock_icon,
+                    isPassword = true,
+                    passwordVisible = passwordVisible,
+                    onPasswordToggle = { passwordVisible = !passwordVisible }
+                )
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(
-                    onClick = { onLoginClick() },
+                    onClick = {
+                        if (validateFields()){
+                            hashedPass = hashPassword(password)
+                            viewModel.loginUser(email, hashedPass)
+
+                            showError = false
+                        } else{
+                            showError = true
+                        }
+                              },
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
                     modifier = Modifier
                         .padding(horizontal = 32.dp)
@@ -157,6 +206,9 @@ fun LoginScreen(onLoginClick: () -> Unit, onBack: () -> Unit) {
                     }
                 }
 
+                if (showError) {
+                    Text(text = errorMessage, color = Color.Red, fontSize = 14.sp, modifier = Modifier.padding(top = 8.dp))
+                }
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Botón de "Volver"
@@ -203,5 +255,5 @@ fun LoginScreen(onLoginClick: () -> Unit, onBack: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun LoginScreenPreview() {
-    LoginScreen(onLoginClick = {}, onBack = {})
+    //LoginScreen(onLoginClick = {}, onBack = {})
 }

@@ -13,15 +13,30 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.papalote.ui.theme.PapaloteTheme
 import com.example.papalote.ui.theme.pages.*
+import com.example.papalote.ui.theme.pages.WelcomeScreen
+import com.example.papalote.ui.theme.pages.LoginScreen
+import com.example.papalote.ui.theme.pages.RegisterScreen
+import com.example.papalote.utils.TokenManager
+import com.example.papalote.viewModel.UserViewModel
+import com.example.papalote.viewModel.LoginViewModel
+import com.example.papalote.viewModel.RegistrationViewModel
+import com.example.papalote.viewModelFactory.RegistrationViewModelFactory
+import com.example.papalote.viewModelFactory.LoginViewModelFactory
+import com.example.papalote.viewModelFactory.UserViewModelFactory
+import com.example.papalote.api.Repository
+import androidx.lifecycle.viewmodel.compose.viewModel
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val tokenManager = TokenManager(applicationContext) // Inicializamos el TokenManager
+
         setContent {
             PapaloteTheme {
                 val navController = rememberNavController()
                 Scaffold(modifier = Modifier.fillMaxSize()) {
-                    AppNavigation(navController = navController)
+                    AppNavigation(navController = navController, tokenManager = tokenManager)
                 }
             }
         }
@@ -29,7 +44,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun AppNavigation(navController: NavHostController) {
+fun AppNavigation(navController: NavHostController, tokenManager: TokenManager) {
     // Cambiamos la pantalla de inicio a "splash"
     NavHost(navController = navController, startDestination = "splash") {
 
@@ -45,19 +60,31 @@ fun AppNavigation(navController: NavHostController) {
                 onRegisterClicked = { navController.navigate("register") }
             )
         }
-
-        // Pantalla de inicio de sesión
+        val repository = Repository(RetrofitClient.apiService, tokenManager)
         composable("login") {
+            val loginViewModel: LoginViewModel = viewModel(
+                factory = LoginViewModelFactory(repository)
+            )
             LoginScreen(
-                onLoginClick = { navController.navigate("zones") },
+                tokenManager = tokenManager,
+                viewModel = loginViewModel,
+                onLoginSuccess = { navController.navigate("zones") },
                 onBack = { navController.navigateUp() }
             )
         }
 
         // Pantalla de registro
         composable("register") {
-            RegisterScreen(onBack = { navController.navigateUp() })
+            val registrationViewModel: RegistrationViewModel = viewModel(
+                factory = RegistrationViewModelFactory(repository)
+            )
+            RegisterScreen(
+                viewModel = registrationViewModel,
+                onBack = { navController.navigateUp() },
+                onRegistrationSuccess = { navController.navigate("welcome") }
+            )
         }
+
 
         // Pantalla de Zonas
         composable("zones") {
@@ -104,9 +131,9 @@ fun AppNavigation(navController: NavHostController) {
         composable("mapa") {
             MapaScreen() // Llama al Composable que contiene la pantalla del mapa
         }
-        // Pantalla de Perfil
         composable("profile") {
-            UserProfileScreen() // Llama al Composable que contiene la pantalla del perfil
+            val userViewModel = UserViewModelFactory(tokenManager).create(UserViewModel::class.java)
+            UserProfileScreen(viewModel = userViewModel)
         }
 
     }
