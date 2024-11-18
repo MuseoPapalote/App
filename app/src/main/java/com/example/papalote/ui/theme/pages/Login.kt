@@ -27,10 +27,14 @@ import com.example.papalote.states.LoginState
 import com.example.papalote.viewModel.LoginViewModel
 import java.security.MessageDigest
 import kotlin.text.Charsets.UTF_8
-
+import com.example.papalote.utils.TokenManager
+import com.example.papalote.viewModelFactory.LoginViewModelFactory
+import com.example.papalote.api.Repository
+import com.example.papalote.RetrofitClient
 
 @Composable
 fun LoginScreen(
+    tokenManager: TokenManager,
     viewModel: LoginViewModel = viewModel(),
     onLoginSuccess: () -> Unit,
     onBack: () -> Unit
@@ -95,6 +99,11 @@ fun LoginScreen(
             }
         }
     }
+    val repository = Repository(RetrofitClient.apiService, tokenManager) // Crear el Repository
+
+    val viewModel: LoginViewModel = viewModel(
+        factory = LoginViewModelFactory(repository) // Usamos la fábrica personalizada
+    )
 
     // Texto para los elementos de la pantalla según el idioma
     val loginText = if (LanguageManager.language == "es") "INICIAR SESIÓN" else "LOGIN"

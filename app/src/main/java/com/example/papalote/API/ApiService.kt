@@ -1,4 +1,4 @@
-package com.example.papalote.API
+package com.example.papalote.api
 import com.example.papalote.LoginRequest
 import com.example.papalote.LoginResponse
 import com.example.papalote.RegisterRequest
@@ -8,6 +8,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.http.GET
+import retrofit2.http.Header
 
 interface ApiService {
     @POST("/usuarios/register")
@@ -16,8 +17,10 @@ interface ApiService {
     @POST("/usuarios/login")
     suspend fun loginUser(@Body request: LoginRequest): Response<LoginResponse>
 
-    @GET("/profile")
-    suspend fun getUserInfo(): Response<UserResponse>
+    @GET("/usuarios/profile")
+    suspend fun getUserInfo(
+        @Header("Authorization") token: String
+    ): Response<UserResponse>
 
 }
 

@@ -88,7 +88,7 @@ data class EncuestaResponse(
 )
 
 data class UserResponse(
-    val name: String,
+    val nombre: String,
     val email: String,
-    val birthDate: Date // Asegúrate de manejar este tipo correctamente
+    val fecha_nacimiento: Date // Asegúrate de manejar este tipo correctamente
 )

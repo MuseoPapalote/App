@@ -2,92 +2,118 @@ package com.example.papalote.ui.theme.pages
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.papalote.R
-
+import com.example.papalote.states.UserState
+import com.example.papalote.viewModel.UserViewModel
 
 @Composable
-fun UserProfileScreen() {
+fun UserProfileScreen(
+    viewModel: UserViewModel = viewModel()
+) {
+    val userState by viewModel.userState.collectAsState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFD6E800)) // Fondo verde similar
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        // Título
-        /*Text(
-            text = "toco juego y aprendo",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.White,
-            modifier = Modifier.padding(16.dp)
-        )*/
-        HeaderWithLogoo()
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Imagen de usuario
-        Box(
-            modifier = Modifier
-                .size(100.dp)
-                .background(Color.White, shape = CircleShape),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.userscc), // Cambia por el ícono adecuado
-                contentDescription = "Usuario",
-                modifier = Modifier.size(64.dp),
-                tint = Color.Gray
-            )
+    // Solo llamamos a `fetchUserInfo` si estamos en el estado Idle
+    LaunchedEffect(userState) {
+        if (userState is UserState.Idle) {
+            println("Llamando a fetchUserInfo desde UserProfileScreen...")
+            viewModel.fetchUserInfo()
         }
+    }
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // Nombre del usuario
-        Text(
-            text = "USUARIO",
-            fontSize = 30.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.White
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Información del usuario
-        UserInfoItem(icon = R.drawable.userscc, label = "Héctor de Jesús Taméz Treviño")
-        UserInfoItem(icon = R.drawable.birthday_icon, label = "29 de febrero 2008")
-        UserInfoItem(icon = R.drawable.lock_icon, label = "xXHectorXx@hotmail.com", editable = true)
-        UserInfoItem(icon = R.drawable.lock_icon, label = "************", editable = true)
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Número de insignias alcanzadas
-        InsigniasInfo()
+    when (userState) {
+        is UserState.Loading -> {
+            println("Estado actual: Loading")
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0xFFD6E800)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = "Cargando...", fontSize = 20.sp, color = Color.White)
+            }
+        }
+        is UserState.Success -> {
+            println("Estado actual: Success")
+            val user = (userState as UserState.Success).user
+            println("Mostrando datos del usuario: $user")
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0xFFD6E800))
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                HeaderWithLogoo()
+                Spacer(modifier = Modifier.height(16.dp))
+                Box(
+                    modifier = Modifier
+                        .size(100.dp)
+                        .background(Color.White, shape = CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.userscc),
+                        contentDescription = "Usuario",
+                        modifier = Modifier.size(64.dp),
+                        tint = Color.Gray
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = user.nombre,
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                UserInfoItem(icon = R.drawable.userscc, label = user.nombre)
+                UserInfoItem(icon = R.drawable.birthday_icon, label = user.fecha_nacimiento.toString())
+                UserInfoItem(icon = R.drawable.lock_icon, label = user.email, editable = false)
+                Spacer(modifier = Modifier.height(16.dp))
+                InsigniasInfo()
+            }
+        }
+        is UserState.Error -> {
+            val errorMessage = (userState as UserState.Error).message
+            println("Mostrando error: $errorMessage")
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0xFFD6E800)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = "Error: $errorMessage", fontSize = 20.sp, color = Color.Red)
+            }
+        }
+        is UserState.Idle -> {
+            println("Estado actual: Idle")
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0xFFD6E800)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = "Esperando datos...", fontSize = 20.sp, color = Color.White)
+            }
+        }
     }
 }
+
+
 @Composable
 fun HeaderWithLogoo() {
     Box(
@@ -104,6 +130,7 @@ fun HeaderWithLogoo() {
         )
     }
 }
+
 @Composable
 fun UserInfoItem(icon: Int, label: String, editable: Boolean = false) {
     Row(

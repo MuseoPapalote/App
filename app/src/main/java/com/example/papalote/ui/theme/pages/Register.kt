@@ -33,7 +33,10 @@ import java.util.Locale
 import java.util.Calendar
 import android.app.DatePickerDialog
 import androidx.compose.ui.platform.LocalContext
-
+import com.example.papalote.viewModelFactory.RegistrationViewModelFactory
+import com.example.papalote.api.Repository
+import com.example.papalote.RetrofitClient
+import com.example.papalote.utils.TokenManager
 
 fun hashPassword(password: String): String {
     val bytes = password.toByteArray(UTF_8)
@@ -44,7 +47,7 @@ fun hashPassword(password: String): String {
 
 @Composable
 fun RegisterScreen(
-    viewModel: RegistrationViewModel = viewModel(),
+    viewModel: RegistrationViewModel = viewModel(factory = RegistrationViewModelFactory(Repository(RetrofitClient.apiService, TokenManager(LocalContext.current)))),
     onBack: () -> Unit,
     onRegistrationSuccess: () -> Unit
 ) {
