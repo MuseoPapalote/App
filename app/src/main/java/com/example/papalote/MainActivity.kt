@@ -27,6 +27,7 @@ import com.example.papalote.api.Repository
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +51,7 @@ fun AppNavigation(navController: NavHostController, tokenManager: TokenManager) 
 
         // Pantalla de Splash
         composable("splash") {
-            SplashScreen(navController = navController)
+            SplashScreen(navController = navController, tokenManager = tokenManager)
         }
 
         // Pantalla de bienvenida
@@ -138,3 +139,4 @@ fun AppNavigation(navController: NavHostController, tokenManager: TokenManager) 
 
     }
 }
+
