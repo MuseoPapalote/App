@@ -1,5 +1,4 @@
 package com.example.papalote
-
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,6 +12,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.papalote.ui.theme.PapaloteTheme
 import com.example.papalote.ui.theme.pages.*
+import com.example.papalote.ui.theme.components.CustomBottomBar
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.compose.runtime.getValue
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,7 +23,18 @@ class MainActivity : ComponentActivity() {
         setContent {
             PapaloteTheme {
                 val navController = rememberNavController()
-                Scaffold(modifier = Modifier.fillMaxSize()) {
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentRoute = navBackStackEntry?.destination?.route
+
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    // Mostrar la barra solo en ciertas rutas
+                    bottomBar = {
+                        if (currentRoute in listOf("zones", "mapa", "scanQR", "insignias")) {
+                            CustomBottomBar(navController = navController)
+                        }
+                    }
+                ) {
                     AppNavigation(navController = navController)
                 }
             }
@@ -44,6 +58,10 @@ fun AppNavigation(navController: NavHostController) {
                 onLoginClicked = { navController.navigate("login") },
                 onRegisterClicked = { navController.navigate("register") }
             )
+        }
+
+        composable("mapa") {
+            MapaScreen(onBack = { navController.navigateUp() }) // Navegar hacia atrás
         }
 
         // Pantalla de inicio de sesión
@@ -100,9 +118,6 @@ fun AppNavigation(navController: NavHostController) {
                 navController = navController
             )
         }
-        // Pantalla de Mapa
-        composable("mapa") {
-            MapaScreen() // Llama al Composable que contiene la pantalla del mapa
-        }
+
     }
 }

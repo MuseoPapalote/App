@@ -1,5 +1,6 @@
 package com.example.papalote.ui.theme.components
-
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -12,17 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import com.example.papalote.R
-
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Add
-
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import com.example.papalote.R
 
 @Composable
 fun CustomBottomBar(
@@ -47,9 +43,13 @@ fun CustomBottomBar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Ícono de Mapa
-            IconButton(onClick = { navController.navigate("mapa") }) { // Cambiamos "search" por "mapa"
+            IconButton(onClick = {
+                navController.navigate("mapa") {
+                    popUpTo("mapa") { inclusive = true } // Evitar duplicados en la pila
+                }
+            }) {
                 Icon(
-                    painter = painterResource(id = R.drawable.map),
+                    painter = painterResource(id = R.drawable.map), // Recurso de ícono
                     contentDescription = "Mapa",
                     tint = Color.White,
                     modifier = Modifier.size(48.dp)
@@ -57,7 +57,11 @@ fun CustomBottomBar(
             }
 
             // Ícono de Home (redirige a la página de Zonas)
-            IconButton(onClick = { navController.navigate("zones") }) {
+            IconButton(onClick = {
+                navController.navigate("zones") {
+                    popUpTo("zones") { inclusive = true }
+                }
+            }) {
                 Image(
                     painter = painterResource(id = R.drawable.hoome),
                     contentDescription = "Home",
@@ -66,7 +70,11 @@ fun CustomBottomBar(
             }
 
             // Ícono de QR
-            IconButton(onClick = { navController.navigate("scanQR") }) {
+            IconButton(onClick = {
+                navController.navigate("scanQR") {
+                    popUpTo("scanQR") { inclusive = true }
+                }
+            }) {
                 Image(
                     painter = painterResource(id = R.drawable.qrs),
                     contentDescription = "Escaneo QR",

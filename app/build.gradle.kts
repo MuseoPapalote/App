@@ -67,7 +67,8 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation("androidx.compose.material:material:1.5.1")
     implementation("androidx.compose.ui:ui:1.5.1")
-
+    implementation("androidx.compose.foundation:foundation:1.5.1") // Manejo de gestos y layouts
+    implementation("androidx.compose.ui:ui:1.5.1") // Componentes básicos de UI
     implementation("androidx.navigation:navigation-compose:2.5.3")
     implementation(libs.androidx.appcompat)
     implementation ("androidx.compose.material:material-icons-extended:1.5.1")
