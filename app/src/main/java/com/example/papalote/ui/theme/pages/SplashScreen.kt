@@ -16,15 +16,29 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.papalote.R
+import com.example.papalote.utils.TokenManager
 import kotlinx.coroutines.delay
 
 @Composable
-fun SplashScreen(navController: NavHostController) {
-    // Navegar automáticamente después de 3 segundos
+fun SplashScreen(navController: NavHostController, tokenManager: TokenManager) {
+    // Verifica el token del usuario
     LaunchedEffect(key1 = true) {
-        delay(3000) // Espera 5 segundos
-        navController.navigate("Welcome") {
-            popUpTo("splash") { inclusive = true } // Elimina la pantalla de splash del back stack
+        delay(3000) // Espera 3 segundos para mostrar la pantalla de splash
+
+        val token = tokenManager.getToken() // Obtiene el token almacenado
+
+        if (!token.isNullOrEmpty()) {
+            // Si el token existe, redirige a la pantalla de zonas
+            println("Token encontrado: $token. Navegando a zones.")
+            navController.navigate("zones") {
+                popUpTo("splash") { inclusive = true } // Limpia la pantalla de splash del stack
+            }
+        } else {
+            // Si no hay token, redirige a la pantalla de bienvenida
+            println("No se encontró token. Navegando a welcome.")
+            navController.navigate("welcome") {
+                popUpTo("splash") { inclusive = true } // Limpia la pantalla de splash del stack
+            }
         }
     }
 
