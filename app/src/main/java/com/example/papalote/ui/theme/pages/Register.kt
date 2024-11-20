@@ -77,8 +77,40 @@ fun RegisterScreen(
     var showHashDialog by remember { mutableStateOf(false) }
     var showError by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
+    var showTermsDialog by remember { mutableStateOf(true) } // Mostrar el diálogo inicialmente
 
     val context = LocalContext.current // Obtén el contexto aquí
+    val termsAndConditionsTitle = if (LanguageManager.language == "es") "Términos y Condiciones" else "Terms and Conditions"
+    val acceptButtonText = if (LanguageManager.language == "es") "Aceptar" else "Accept"
+    if (showTermsDialog) {
+        AlertDialog(
+            onDismissRequest = { },
+            title = {
+                Text(
+                    text = termsAndConditionsTitle,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
+                )
+            },
+            text = {
+                Column {
+                    Text(
+                        text = "Al usar esta aplicación, aceptas los siguientes términos y condiciones...",
+                        style = MaterialTheme.typography.body1,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                    // Puedes agregar más contenido aquí si lo necesitas
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = { showTermsDialog = false } // Cierra el diálogo
+                ) {
+                    Text(text = acceptButtonText)
+                }
+            }
+        )
+    }
     fun showDatePicker(onDateSelected: (Date) -> Unit) {
         val calendar = Calendar.getInstance()
         val datePickerDialog = DatePickerDialog(
