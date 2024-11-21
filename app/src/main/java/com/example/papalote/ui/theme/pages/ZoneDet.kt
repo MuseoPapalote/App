@@ -21,17 +21,19 @@ import androidx.navigation.NavHostController
 import com.example.papalote.R
 import com.example.papalote.ui.theme.components.CustomBottomBar
 import com.example.papalote.utils.LanguageManager
+import com.example.papalote.utils.TokenManager
 
 @Composable
 fun ZoneDetailScreen(
     zoneName: String,
     onBack: () -> Unit,
     navController: NavHostController,
-    onMedalClick: () -> Unit
+    onMedalClick: () -> Unit,
+    tokenManager: TokenManager
 ) {
     Scaffold(
         bottomBar = {
-            CustomBottomBar(navController = navController)
+            CustomBottomBar(navController = navController, tokenManager = tokenManager)
         }
     ) { paddingValues: PaddingValues ->
         Box(

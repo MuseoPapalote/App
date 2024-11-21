@@ -24,9 +24,16 @@ import com.example.papalote.ui.theme.components.CustomBottomBar
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.example.papalote.utils.LanguageManager
+import com.example.papalote.utils.TokenManager
+
 
 @Composable
-fun ComunicoScreen(zoneName: String, onBack: () -> Unit, navController: NavHostController) {
+fun ComunicoScreen(
+    zoneName: String,
+    onBack: () -> Unit,
+    navController: NavHostController,
+    tokenManager: TokenManager // Agregamos TokenManager como parámetro
+) {
     // Obtener el idioma actual
     val currentLanguage = LanguageManager.language
 
@@ -39,7 +46,7 @@ fun ComunicoScreen(zoneName: String, onBack: () -> Unit, navController: NavHostC
 
     Scaffold(
         bottomBar = {
-            CustomBottomBar(navController = navController)
+            CustomBottomBar(navController = navController, tokenManager = tokenManager)
         }
     ) { paddingValues ->
         Column(
@@ -121,11 +128,4 @@ fun AnswerButton(text: String) {
             fontWeight = FontWeight.SemiBold
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ComunicoScreenPreview() {
-    val navController = rememberNavController()
-    ComunicoScreen(zoneName = "Comunico", onBack = {}, navController = navController)
 }

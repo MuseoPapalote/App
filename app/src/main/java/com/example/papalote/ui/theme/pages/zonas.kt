@@ -23,9 +23,10 @@ import androidx.navigation.NavHostController
 import com.example.papalote.R
 import com.example.papalote.ui.theme.components.CustomBottomBar
 import com.example.papalote.utils.LanguageManager
+import com.example.papalote.utils.TokenManager
 
 @Composable
-fun ZonasScreen(navController: NavHostController, onZoneClick: (String) -> Unit, onBack: () -> Unit) {
+fun ZonasScreen(navController: NavHostController,tokenManager: TokenManager, onZoneClick: (String) -> Unit, onBack: () -> Unit) {
     // Definir los textos dinámicamente según el idioma
     val titleText = if (LanguageManager.language == "es") "Zonas" else "Zones"
     val volverText = if (LanguageManager.language == "es") "Volver" else "Back"
@@ -52,7 +53,10 @@ fun ZonasScreen(navController: NavHostController, onZoneClick: (String) -> Unit,
     Scaffold(
         bottomBar = {
             // Usamos CustomBottomBar aquí
-            CustomBottomBar(navController = navController)
+            CustomBottomBar(
+                navController = navController,
+                tokenManager = tokenManager
+            )
         }
     ) { paddingValues ->
         Box(

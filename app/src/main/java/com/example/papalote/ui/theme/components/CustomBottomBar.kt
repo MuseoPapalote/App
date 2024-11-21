@@ -15,6 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.papalote.R
+import com.example.papalote.utils.TokenManager
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
@@ -26,6 +27,7 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun CustomBottomBar(
+    tokenManager: TokenManager, // Agregamos TokenManager como parámetro
     navController: NavHostController
 ) {
     var isMenuExpanded by remember { mutableStateOf(false) }
@@ -160,6 +162,32 @@ fun CustomBottomBar(
                     Spacer(modifier = Modifier.width(16.dp))
                     Text(
                         text = "Zonas",
+                        color = Color.Black,
+                        style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Normal)
+                    )
+                }
+            }
+            // Nuevo botón de "Cerrar sesión"
+            DropdownMenuItem(onClick = {
+                tokenManager.clearToken() // Limpiar el token del usuario
+                navController.navigate("welcome") {
+                    popUpTo("zones") { inclusive = true } // Aseguramos que el stack se limpie
+                }
+                isMenuExpanded = false
+            }) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.logout), // Ícono de logout
+                        contentDescription = "Cerrar sesión",
+                        tint = Color.Red,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Text(
+                        text = "Cerrar sesión",
                         color = Color.Black,
                         style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Normal)
                     )
