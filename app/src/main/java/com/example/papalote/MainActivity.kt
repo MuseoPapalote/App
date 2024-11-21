@@ -91,6 +91,7 @@ fun AppNavigation(navController: NavHostController, tokenManager: TokenManager) 
         composable("zones") {
             ZonasScreen(
                 navController = navController,
+                tokenManager = tokenManager,
                 onZoneClick = { zoneName ->
                     navController.navigate("zoneDetail/$zoneName")
                 },
@@ -105,18 +106,24 @@ fun AppNavigation(navController: NavHostController, tokenManager: TokenManager) 
                 zoneName = zoneName,
                 onBack = { navController.navigateUp() },
                 navController = navController,
+                tokenManager = tokenManager,
                 onMedalClick = { navController.navigate("insignias") }
             )
         }
 
         // Pantalla de Insignias
         composable("insignias") {
-            InsigniasScreen(navController = navController)
+            InsigniasScreen(
+                navController = navController,
+                tokenManager = tokenManager // Pasa el tokenManager aquí
+            )
         }
 
         // Pantalla de Escaneo de QR
         composable("scanQR") {
-            EscaneoQRScreen(navController = navController)
+            EscaneoQRScreen(
+                navController = navController,
+            )
         }
 
         // Pantalla de Dinosaurio (ComunicoScreen)
@@ -125,7 +132,8 @@ fun AppNavigation(navController: NavHostController, tokenManager: TokenManager) 
             ComunicoScreen(
                 zoneName = zoneName,
                 onBack = { navController.navigateUp() },
-                navController = navController
+                navController = navController,
+                tokenManager = tokenManager
             )
         }
         // Pantalla de Mapa

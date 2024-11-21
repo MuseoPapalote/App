@@ -20,9 +20,10 @@ import androidx.navigation.NavHostController
 import com.example.papalote.R
 import com.example.papalote.ui.theme.components.CustomBottomBar
 import com.example.papalote.utils.LanguageManager
+import com.example.papalote.utils.TokenManager
 
 @Composable
-fun InsigniasScreen(navController: NavHostController) {
+fun InsigniasScreen(navController: NavHostController , tokenManager: TokenManager) {
     // Obtener el idioma actual
     val currentLanguage = LanguageManager.language
 
@@ -35,7 +36,7 @@ fun InsigniasScreen(navController: NavHostController) {
 
     Scaffold(
         bottomBar = {
-            CustomBottomBar(navController = navController)
+            CustomBottomBar(navController = navController, tokenManager = tokenManager)
         }
     ) { paddingValues ->
         Column(
