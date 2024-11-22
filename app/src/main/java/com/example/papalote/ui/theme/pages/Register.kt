@@ -1,5 +1,6 @@
 package com.example.papalote.ui.theme.pages
 
+import android.app.Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -32,11 +33,63 @@ import java.util.Date
 import java.util.Locale
 import java.util.Calendar
 import android.app.DatePickerDialog
+import android.content.Context
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
+import androidx.compose.material.SnackbarDefaults.backgroundColor
 import androidx.compose.ui.platform.LocalContext
+import androidx.credentials.CredentialManager
+import androidx.credentials.CustomCredential
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.GetCredentialResponse
+import androidx.credentials.PasswordCredential
+import androidx.credentials.PublicKeyCredential
+import androidx.credentials.exceptions.GetCredentialException
 import com.example.papalote.viewModelFactory.RegistrationViewModelFactory
 import com.example.papalote.api.Repository
 import com.example.papalote.RetrofitClient
 import com.example.papalote.utils.TokenManager
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+
+var WEB_CLIENT_ID = "990345923744-88epqcr21i7ko8gmc6siqnums13oom29.apps.googleusercontent.com"
+
+fun createGoogleSignInRequest(): GetCredentialRequest {
+    val googleIdOption = GetGoogleIdOption.Builder()
+        .setFilterByAuthorizedAccounts(false)
+        .setServerClientId(WEB_CLIENT_ID)
+        .build()
+
+    return GetCredentialRequest.Builder()
+        .addCredentialOption(googleIdOption)
+        .build()
+}
+
+suspend fun performGoogleSignIn(
+    credentialManager: CredentialManager,
+    request: GetCredentialRequest,
+    context: Context,
+    onSignInSuccess: (String) -> Unit,
+    onSignInFailure: (String) -> Unit
+) {
+    try {
+        val response = credentialManager.getCredential( context, request)
+        val idToken = (response.credential as? com.google.android.libraries.identity.googleid.GoogleIdTokenCredential)?.idToken
+        if (idToken != null) {
+            onSignInSuccess(idToken)
+        } else {
+            onSignInFailure("ID Token no recibido")
+        }
+    } catch (e: GetCredentialException) {
+        onSignInFailure("Error al obtener el token de Google: ${e.message}")
+    }
+}
 
 fun hashPassword(password: String): String {
     val bytes = password.toByteArray(UTF_8)
@@ -51,6 +104,11 @@ fun RegisterScreen(
     onBack: () -> Unit,
     onRegistrationSuccess: () -> Unit
 ) {
+
+    val context = LocalContext.current
+    val credentialManager = remember { CredentialManager.create(context)}
+    val coroutineScope = rememberCoroutineScope()
+
     var email by remember { mutableStateOf("") }
     var birthDate by remember { mutableStateOf(Date()) }
 
@@ -78,7 +136,6 @@ fun RegisterScreen(
     var showError by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
 
-    val context = LocalContext.current // Obtén el contexto aquí
     fun showDatePicker(onDateSelected: (Date) -> Unit) {
         val calendar = Calendar.getInstance()
         val datePickerDialog = DatePickerDialog(
@@ -357,7 +414,23 @@ fun RegisterScreen(
                     contentDescription = "Google",
                     modifier = Modifier
                         .size(40.dp)
-                        .padding(start = 20.dp),
+                        .padding(start = 20.dp)
+                        .clickable{
+                            coroutineScope.launch{
+                                performGoogleSignIn(
+                                    credentialManager = credentialManager,
+                                    request = createGoogleSignInRequest(),
+                                    context = context,
+                                    onSignInSuccess = { idToken ->
+                                        Log.d("GoogleSignIn", "ID Token: $idToken")
+                                    },
+                                    onSignInFailure = { error ->
+                                        Log.e("GoogleSignIn", "Error: $error")
+                                    }
+                                )
+
+                            }
+                        },
                     contentScale = ContentScale.Fit
                 )
             }
@@ -402,8 +475,14 @@ fun InputFieldWithIcon(
     }
 }
 
+//
+//@Preview(showBackground = true)
+//@Composable
+//fun RegisterScreenPreview() {
+//    //RegisterScreen(onBack = {})
+//}
+
 @Preview(showBackground = true)
 @Composable
-fun RegisterScreenPreview() {
-    //RegisterScreen(onBack = {})
+fun GoogleSignInScreen(){
 }

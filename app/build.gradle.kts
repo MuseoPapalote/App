@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "com.example.papalote"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.papalote"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -50,6 +50,13 @@ android {
 }
 
 dependencies {
+    // Google Auth
+    implementation ("androidx.core:core-ktx:1.15.0")
+    implementation ("androidx.appcompat:appcompat:1.4.0")
+    implementation ("com.google.android.material:material:1.5.0")
+    implementation ("com.google.android.gms:play-services-auth:20.7.0")
+    implementation ("androidx.credentials:credentials:1.0.0")
+    implementation ("androidx.credentials:credentials-play-services-auth:1.0.0")
     //Escaneo de qr
     implementation("com.google.android.gms:play-services-code-scanner:16.1.0")
 
@@ -85,7 +92,7 @@ dependencies {
     implementation ("androidx.compose.ui:ui-tooling-preview:1.5.1")
     // Jetpack Compose Foundation
     implementation ("androidx.compose.foundation:foundation:1.5.1")
-
+    implementation(libs.googleid)
 
 
     // Testing dependencies

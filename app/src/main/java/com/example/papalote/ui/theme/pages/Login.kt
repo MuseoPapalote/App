@@ -31,6 +31,13 @@ import com.example.papalote.utils.TokenManager
 import com.example.papalote.viewModelFactory.LoginViewModelFactory
 import com.example.papalote.api.Repository
 import com.example.papalote.RetrofitClient
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import android.content.Intent
+import androidx.compose.runtime.*
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun LoginScreen(
