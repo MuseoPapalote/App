@@ -26,7 +26,11 @@ import com.example.papalote.utils.LanguageManager
 import com.example.papalote.utils.TokenManager
 
 @Composable
-fun ZonasScreen(navController: NavHostController,tokenManager: TokenManager, onZoneClick: (String) -> Unit, onBack: () -> Unit) {
+fun ZonasScreen(
+    navController: NavHostController,
+    tokenManager: TokenManager,
+    onBack: () -> Unit
+) {
     // Definir los textos dinámicamente según el idioma
     val titleText = if (LanguageManager.language == "es") "Zonas" else "Zones"
     val volverText = if (LanguageManager.language == "es") "Volver" else "Back"
@@ -84,7 +88,18 @@ fun ZonasScreen(navController: NavHostController,tokenManager: TokenManager, onZ
                 // Iconos y Etiquetas GRID
                 GridLayout(
                     items = gridItems,
-                    onZoneClick = onZoneClick
+                    onZoneClick = { zoneName ->
+                        val route = when (zoneName) {
+                            "Comprendo" -> "comprendo"
+                            "Comunico" -> "comunico"
+                            "Expreso" -> "expreso"
+                            "Pequeños" -> "pequenos"
+                            "Pertenezco" -> "pertenezco"
+                            "Soy" -> "soy"
+                            else -> "zones" // Ruta predeterminada en caso de error
+                        }
+                        navController.navigate(route)
+                    }
                 )
 
                 Button(

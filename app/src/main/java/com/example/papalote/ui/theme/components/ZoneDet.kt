@@ -1,4 +1,4 @@
-package com.example.papalote.ui.theme.pages
+package com.example.papalote.ui.theme.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,17 +19,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.papalote.R
-import com.example.papalote.ui.theme.components.CustomBottomBar
 import com.example.papalote.utils.LanguageManager
 import com.example.papalote.utils.TokenManager
 
 @Composable
 fun ZoneDetailScreen(
     zoneName: String,
-    onBack: () -> Unit,
-    navController: NavHostController,
+    backgroundColor: Color,
+    headerImage: Int,
+    activities: List<String>,
     onMedalClick: () -> Unit,
-    tokenManager: TokenManager
+    navController: NavHostController,
+    tokenManager: TokenManager,
+    onBack: () -> Unit,
+    onActivityClick: (String) -> Unit
 ) {
     Scaffold(
         bottomBar = {
@@ -50,7 +53,7 @@ fun ZoneDetailScreen(
                 HeaderWithLogo()
                 Header(zoneName = zoneName)
 
-                ActivitiesSection(navController = navController, zoneName = zoneName)
+                ActivitiesSection(navController = navController, activities = activities, zoneName = zoneName , onActivityClick = onActivityClick)
 
                 MedalSection(zoneName = zoneName, onMedalClick = onMedalClick)
             }
@@ -74,6 +77,21 @@ fun HeaderWithLogo() {
         )
     }
 }
+
+@Composable
+fun ZoneHeader(title: String) {
+    Text(
+        text = title,
+        fontSize = 24.sp,
+        fontWeight = FontWeight.Bold,
+        color = Color.Black,
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.LightGray)
+            .padding(16.dp)
+    )
+}
+
 
 @Composable
 fun Header(zoneName: String) {
@@ -113,37 +131,27 @@ fun Header(zoneName: String) {
 }
 
 @Composable
-fun ActivitiesSection(navController: NavHostController, zoneName: String) {
-    // Definir los textos según el idioma seleccionado
-    val activity1Text = if (LanguageManager.language == "es") "Actividad 1" else "Activity 1"
-    val activity2Text = if (LanguageManager.language == "es") "Actividad 2" else "Activity 2"
-    val activity3Text = if (LanguageManager.language == "es") "Actividad 3" else "Activity 3"
-
+fun ActivitiesSection(navController: NavHostController, activities: List<String>, zoneName: String, onActivityClick: (String) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 16.dp)
     ) {
-        ActivityCard(
-            color = Color(0xFFE6A957),
-            icon = painterResource(id = R.drawable.calendario),
-            text = activity1Text,
-            onClick = { navController.navigate("dinosaur/$zoneName") }
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        ActivityCard(
-            color = Color(0xFF6AB98D),
-            icon = painterResource(id = R.drawable.calendario),
-            text = activity2Text,
-            onClick = { navController.navigate("dinosaur/$zoneName") }
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        ActivityCard(
-            color = Color(0xFF55A8E2),
-            icon = painterResource(id = R.drawable.calendario),
-            text = activity3Text,
-            onClick = { navController.navigate("dinosaur/$zoneName") }
-        )
+        activities.forEachIndexed { index, activity ->
+            ActivityCard(
+                color = when (index % 3) {
+                    0 -> Color(0xFFE6A957)
+                    1 -> Color(0xFF6AB98D)
+                    else -> Color(0xFF55A8E2)
+                },
+                icon = painterResource(id = R.drawable.calendario),
+                text = activity,
+                onClick = { onActivityClick(activity) }
+            )
+            if (index < activities.size - 1) {
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+        }
     }
 }
 

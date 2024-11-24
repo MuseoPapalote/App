@@ -4,6 +4,12 @@ import com.example.papalote.LoginResponse
 import com.example.papalote.RegisterRequest
 import com.example.papalote.RegisterResponse
 import com.example.papalote.UserResponse
+import com.example.papalote.TriviaAnswerRequest
+import com.example.papalote.TriviaAnswerResponse
+import com.example.papalote.TriviaAnswersResponse
+import com.example.papalote.TriviaQuestion
+import com.example.papalote.TriviaQuestionsByZoneRequest
+
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -21,6 +27,22 @@ interface ApiService {
     suspend fun getUserInfo(
         @Header("Authorization") token: String
     ): Response<UserResponse>
+
+    // Actualización con los nuevos nombres
+    @POST("/preguntaTrivia")
+    suspend fun obtenerPreguntasPorZona(
+        @Header("Authorization") token: String,
+        @Body zonaRequest: TriviaQuestionsByZoneRequest
+    ): Response<List<TriviaQuestion>>
+
+    @POST("/respuestaTrivia")
+    suspend fun enviarTriviaAnswer(
+        @Header("Authorization") token: String,
+        @Body triviaAnswerRequest: TriviaAnswerRequest
+    ): Response<TriviaAnswerResponse>
+
+    @GET("/respuestaTrivia")
+    suspend fun obtenerTriviaAnswers(): TriviaAnswersResponse
 
 }
 
