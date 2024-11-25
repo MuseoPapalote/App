@@ -57,19 +57,47 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import org.json.JSONObject
+import com.android.volley.Request
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 
-var WEB_CLIENT_ID = "990345923744-88epqcr21i7ko8gmc6siqnums13oom29.apps.googleusercontent.com"
+var WEB_CLIENT_ID = "990345923744-8u8m41e2g5sqvbt4tcrcusglqvramp6d.apps.googleusercontent.com"
 
 fun createGoogleSignInRequest(): GetCredentialRequest {
-    val googleIdOption = GetGoogleIdOption.Builder()
-        .setFilterByAuthorizedAccounts(false)
-        .setServerClientId(WEB_CLIENT_ID)
+    val googleSignInOption = GetSignInWithGoogleOption.Builder(
+        serverClientId = WEB_CLIENT_ID)
         .build()
 
-    return GetCredentialRequest.Builder()
-        .addCredentialOption(googleIdOption)
+    val googleSignInRequest = GetCredentialRequest.Builder()
+        .addCredentialOption(googleSignInOption)
         .build()
+
+    return googleSignInRequest
 }
+
+//fun handleSignIn(result: GetCredentialResponse){
+//    val credential = result.credential
+//    var responseJson: String? = null
+//    when (credential){
+//        is PublicKeyCredential -> {
+//            responseJson = credential.authenticationResponseJson
+//        }
+//
+//        is PasswordCredential -> {
+//            val username = credential.id
+//            val password = credential.password
+//        }
+//
+//        is CustomCredential -> {
+//            if(credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL){
+//                val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
+//                GoogleIdTokenVerifier verifier =
+//            }
+//        }
+//
+//    }
+//}
 
 suspend fun performGoogleSignIn(
     credentialManager: CredentialManager,
@@ -80,15 +108,46 @@ suspend fun performGoogleSignIn(
 ) {
     try {
         val response = credentialManager.getCredential( context, request)
-        val idToken = (response.credential as? com.google.android.libraries.identity.googleid.GoogleIdTokenCredential)?.idToken
-        if (idToken != null) {
-            onSignInSuccess(idToken)
-        } else {
-            onSignInFailure("ID Token no recibido")
+        Log.d("GoogleSignIn", "Response: ${response.credential.data.getBundle("idToken")}")
+        val credential = response.credential
+        if(credential is GoogleIdTokenCredential){
+            val idToken = credential.idToken
+            if (idToken != null) {
+                onSignInSuccess(idToken)
+            } else {
+                onSignInFailure("ID Token no recibido")
+            }
+        } else{
+            onSignInFailure("Credencial no es un ID Token")
         }
     } catch (e: GetCredentialException) {
         onSignInFailure("Error al obtener el token de Google: ${e.message}")
     }
+}
+
+fun sendIdToketoBackend(context: Context,idToken: String){
+    val url = "https://museoapi.org/auth/google/mobile"
+    val requestBody = JSONObject()
+    requestBody.put("id_token", idToken)
+
+    val request = JsonObjectRequest(
+        Request.Method.POST,
+        url,
+        requestBody,
+        { response ->
+            val message = response.getString("message")
+            val user = response.getJSONObject("user")
+            val token = user.getString("token")
+
+            Log.d("GoogleSignIn", "Message: $message")
+            Log.d("GoogleSignIn", "Usuario: ${user.getString("name")}, Email: ${user.getString("email")}")
+            Log.d("GoogleSignIn", "Token: $token")
+        },
+        { error ->
+            Log.e("GoogleSignIn", "Error: ${error.message}")
+        }
+    )
+    Volley.newRequestQueue(context).add(request)
 }
 
 fun hashPassword(password: String): String {
@@ -415,14 +474,15 @@ fun RegisterScreen(
                     modifier = Modifier
                         .size(40.dp)
                         .padding(start = 20.dp)
-                        .clickable{
-                            coroutineScope.launch{
+                        .clickable {
+                            coroutineScope.launch {
                                 performGoogleSignIn(
                                     credentialManager = credentialManager,
                                     request = createGoogleSignInRequest(),
                                     context = context,
                                     onSignInSuccess = { idToken ->
                                         Log.d("GoogleSignIn", "ID Token: $idToken")
+                                        sendIdToketoBackend(context, idToken)
                                     },
                                     onSignInFailure = { error ->
                                         Log.e("GoogleSignIn", "Error: $error")

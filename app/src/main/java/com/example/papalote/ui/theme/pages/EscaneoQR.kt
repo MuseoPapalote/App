@@ -21,10 +21,11 @@ import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
 import com.example.papalote.utils.LanguageManager
+import com.example.papalote.viewModel.VisitViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EscaneoQRScreen(navController: NavHostController) {
+fun EscaneoQRScreen(navController: NavHostController, visitViewModel: VisitViewModel) {
     val context = LocalContext.current
     var scanResult by remember { mutableStateOf<String?>(null) }
     var showError by remember { mutableStateOf(false) }
@@ -39,6 +40,12 @@ fun EscaneoQRScreen(navController: NavHostController) {
     val openBrowserText = if (currentLanguage == "es") "Abrir en Navegador" else "Open in Browser"
     val errorText = if (currentLanguage == "es") "Error al escanear el código QR." else "Error scanning the QR code."
     val backButtonText = if (currentLanguage == "es") "Volver al Menú" else "Back to Menu"
+
+    LaunchedEffect(scanResult){
+        if(scanResult != null){
+            visitViewModel.registerVisit(scanResult!!)
+        }
+    }
 
     Scaffold(
         topBar = {

@@ -7,7 +7,11 @@ import com.example.papalote.RetrofitClient.apiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import com.example.papalote.UserResponse
+import com.example.papalote.VisitRequest
+import com.example.papalote.VisitResponse
 import com.example.papalote.utils.TokenManager
+import retrofit2.http.Body
+import retrofit2.http.Header
 
 class Repository(private val apiService: ApiService, private val tokenManager: TokenManager) {
 
@@ -58,6 +62,31 @@ class Repository(private val apiService: ApiService, private val tokenManager: T
                     }
                 }
             } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
+
+    suspend fun registerVisit(request: VisitRequest): Result<VisitResponse>{
+        return withContext(Dispatchers.IO){
+            try{
+                val token = tokenManager.getToken()
+                if(token == null){
+                    println("Token not found")
+                    Result.failure(Exception("Token not found"))
+                }else{
+                    println("Using token: Bearer $token")
+                    val response = apiService.registerVisit("Bearer ${token}",request)
+                    println("Response: $response")
+                    if (response.isSuccessful){
+                        println("Visit registered successfully")
+                        Result.success(response.body()!!)
+                    }else{
+                        println("No se pudo xd ${response.message()}")
+                        Result.failure(Exception("Failed to register visit: ${response.message()}"))
+                    }
+                }
+            } catch(e: Exception){
                 Result.failure(e)
             }
         }

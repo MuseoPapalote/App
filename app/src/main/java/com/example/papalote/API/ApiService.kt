@@ -4,6 +4,8 @@ import com.example.papalote.LoginResponse
 import com.example.papalote.RegisterRequest
 import com.example.papalote.RegisterResponse
 import com.example.papalote.UserResponse
+import com.example.papalote.VisitRequest
+import com.example.papalote.VisitResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -21,6 +23,12 @@ interface ApiService {
     suspend fun getUserInfo(
         @Header("Authorization") token: String
     ): Response<UserResponse>
+
+    @POST("/visit/register")
+    suspend fun registerVisit(
+        @Header("Authorization") token: String,
+        @Body request: VisitRequest
+    ): Response<VisitResponse>
 
 }
 

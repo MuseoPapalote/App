@@ -25,6 +25,7 @@ import com.example.papalote.viewModelFactory.LoginViewModelFactory
 import com.example.papalote.viewModelFactory.UserViewModelFactory
 import com.example.papalote.api.Repository
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.papalote.viewModel.VisitViewModel
 
 
 class MainActivity : ComponentActivity() {
@@ -115,7 +116,7 @@ fun AppNavigation(navController: NavHostController, tokenManager: TokenManager) 
 
         // Pantalla de Escaneo de QR
         composable("scanQR") {
-            EscaneoQRScreen(navController = navController)
+            EscaneoQRScreen(navController = navController, VisitViewModel(repository))
         }
 
         // Pantalla de Dinosaurio (ComunicoScreen)
