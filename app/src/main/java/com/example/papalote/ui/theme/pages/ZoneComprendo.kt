@@ -108,15 +108,15 @@ fun ComprendoQuestionsScreen(
                                     isTransitioning.value = true
 
                                     // Calcular el índice seleccionado
-                                    val opcionSeleccionada = when (seleccionUsuario) {
-                                        0 -> 1
-                                        1 -> 2
-                                        2 -> 3
-                                        else -> 0
-                                    }
+                                    val opcionSeleccionada = seleccionUsuario + 1
 
+                                    println("Pregunta actual: ${pregunta.texto_pregunta}, Respuesta correcta: ${pregunta.respuesta_correcta}")
                                     println("Opción seleccionada: $opcionSeleccionada")
+
                                     println("Preparando respuesta: id_pregunta = ${pregunta.id_pregunta}, opcion_seleccionada = $opcionSeleccionada")
+
+                                    val esCorrecta = pregunta.respuesta_correcta == opcionSeleccionada
+                                    println("Respuesta localmente correcta: $esCorrecta")
 
                                     // Enviar respuesta al ViewModel
                                     triviaViewModel.enviarRespuestaTrivia(

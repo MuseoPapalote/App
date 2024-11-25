@@ -94,24 +94,23 @@ class Repository(private val apiService: ApiService, private val tokenManager: T
     suspend fun enviarRespuestaTrivia(request: TriviaAnswerRequest): Result<TriviaAnswerResponse> {
         return withContext(Dispatchers.IO) {
             try {
-                // Obtén el token desde el TokenManager
-                val token = tokenManager.getToken()
-                if (token.isNullOrEmpty()) {
-                    Result.failure(Exception("Token no encontrado. El usuario no está autenticado."))
-                } else {
+                val accessToken = "Bearer ${tokenManager.getToken()}"
+                println("AccessToken enviado al backend: $accessToken") // Verifica el token enviado
 
-                    println("Enviando al API: $request con token: Bearer $token")
-
-                    // Envía la solicitud con el token
-                    val response = apiService.enviarTriviaAnswer("Bearer $token", request)
-                    if (response.isSuccessful) {
-                        println("Respuesta del backend recibida: ${response.body()}")
-                        Result.success(response.body()!!)
-
+                val response = apiService.enviarTriviaAnswer(accessToken, request)
+                if (response.isSuccessful) {
+                    val respuesta = response.body()
+                    if (respuesta != null) {
+                        println("Respuesta del backend recibida: $respuesta") // Verifica el contenido de la respuesta
+                        println("ID de usuario en la respuesta: ${respuesta.id_usuario}") // Verifica el ID del usuario
+                        Result.success(respuesta)
                     } else {
-                        println("Error recibido del backend: ${response.message()}")
-                        Result.failure(Exception("Error al enviar respuesta: ${response.message()}"))
+                        println("Error: Respuesta del backend es nula")
+                        Result.failure(Exception("Respuesta nula del backend"))
                     }
+                } else {
+                    println("Error recibido del backend: ${response.message()}") // Captura errores del backend
+                    Result.failure(Exception("Error al enviar respuesta: ${response.message()}"))
                 }
             } catch (e: Exception) {
                 println("Excepción al realizar la solicitud: ${e.message}")

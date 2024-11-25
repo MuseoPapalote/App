@@ -44,7 +44,6 @@ data class TriviaAnswerRequest(
 )
 
 data class TriviaAnswerResponse(
-    val id_respuesta: Int,
     val id_usuario: Int,
     val id_pregunta: Int,
     val opcion_seleccionada: Int,

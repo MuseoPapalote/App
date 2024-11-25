@@ -37,9 +37,9 @@ interface ApiService {
 
     @POST("/respuestaTrivia")
     suspend fun enviarTriviaAnswer(
-        @Header("Authorization") token: String,
+        @Header("Authorization") token: String, // El token se pasará como "Bearer <access_token>"
         @Body triviaAnswerRequest: TriviaAnswerRequest
-    ): Response<TriviaAnswerResponse>
+    ):Response<TriviaAnswerResponse>
 
     @GET("/respuestaTrivia")
     suspend fun obtenerTriviaAnswers(): TriviaAnswersResponse

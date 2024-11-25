@@ -42,6 +42,8 @@ fun QuestionCard(
     val isProcessingAnswer = remember { mutableStateOf(false) }
     val isAnswerProcessed = remember { mutableStateOf(false) }
 
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -72,11 +74,16 @@ fun QuestionCard(
 
         // Opciones de respuesta
         options.forEachIndexed { index, option ->
-            val isSelected = selectedOption.value == index
-            val isCorrect = index == correctOptionIndex
+            // Convertir el índice actual (base 0) a base 1
+            val indexBase1 = index + 1
+
+            // val isSelected = selectedOption.value == index
+            // Determinar si la opción es correcta
+            val isCorrect = indexBase1 == correctOptionIndex
+
             val backgroundColor = when {
-                isSelected && isCorrect -> Color.Green
-                isSelected && !isCorrect -> Color.Red
+                selectedOption.value == indexBase1 && isCorrect -> Color.Green
+                selectedOption.value == indexBase1 && !isCorrect -> Color.Red
                 else -> Color(0xFFD0D0D0)
             }
 
@@ -84,8 +91,15 @@ fun QuestionCard(
                 onClick = {
                     if (!isProcessingAnswer.value && !isAnswerProcessed.value) {
                         isProcessingAnswer.value = true // Bloquear nuevas interacciones
-                        selectedOption.value = index // Establecer opción seleccionada
-                        onAnswer(index) // Notificar la respuesta
+                        selectedOption.value = indexBase1
+
+                        println("Opción seleccionada: $indexBase1, Respuesta correcta: $correctOptionIndex")
+
+                        // Ajustar el índice seleccionado a la base de 1 para el backend
+                        //val opcionSeleccionada = index + 1
+                        //println("Seleccionada: $opcionSeleccionada, Correcta: $correctOptionIndex (Ajustada: $adjustedCorrectOptionIndex)")
+
+                        onAnswer(indexBase1) // Notificar la respuesta
 
                         coroutineScope.launch {
                             kotlinx.coroutines.delay(2000) // Mostrar el coloreo por 2 segundos
