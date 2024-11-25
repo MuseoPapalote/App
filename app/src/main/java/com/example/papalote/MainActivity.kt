@@ -183,6 +183,66 @@ fun AppNavigation(navController: NavHostController, tokenManager: TokenManager) 
             )
         }
 
+        //Para la navegacion del comunicoscreen
+        //val triviaViewModelFactory = TriviaViewModelFactory(repository)
+        composable("comunico_questions/{activityName}") { backStackEntry ->
+            val activityName = backStackEntry.arguments?.getString("activityName") ?: "Comunico 1"
+            ComunicoQuestionsScreen(
+                navController = navController,
+                tokenManager = tokenManager,
+                activityName = activityName,
+                triviaViewModelFactory = triviaViewModelFactory
+            )
+        }
+
+        //Para la navegacion del expresoscreen
+        //val triviaViewModelFactory = TriviaViewModelFactory(repository)
+        composable("expreso_questions/{activityName}") { backStackEntry ->
+            val activityName = backStackEntry.arguments?.getString("activityName") ?: "Expreso 1"
+            ExpresoQuestionsScreen(
+                navController = navController,
+                tokenManager = tokenManager,
+                activityName = activityName,
+                triviaViewModelFactory = triviaViewModelFactory
+            )
+        }
+
+        //Para la navegacion del pequeñoscreen
+        //val triviaViewModelFactory = TriviaViewModelFactory(repository)
+        composable("pequeños_questions/{activityName}") { backStackEntry ->
+            val activityName = backStackEntry.arguments?.getString("activityName") ?: "Pequeños 1"
+            PequeñosQuestionsScreen(
+                navController = navController,
+                tokenManager = tokenManager,
+                activityName = activityName,
+                triviaViewModelFactory = triviaViewModelFactory
+            )
+        }
+
+        //Para la navegacion del pertenezcoscreen
+        //val triviaViewModelFactory = TriviaViewModelFactory(repository)
+        composable("pertenezco_questions/{activityName}") { backStackEntry ->
+            val activityName = backStackEntry.arguments?.getString("activityName") ?: "Pertenezco 1"
+            PertenezcoQuestionsScreen(
+                navController = navController,
+                tokenManager = tokenManager,
+                activityName = activityName,
+                triviaViewModelFactory = triviaViewModelFactory
+            )
+        }
+
+        //Para la navegacion del soyscreen
+        //val triviaViewModelFactory = TriviaViewModelFactory(repository)
+        composable("soy_questions/{activityName}") { backStackEntry ->
+            val activityName = backStackEntry.arguments?.getString("activityName") ?: "Soy 1"
+            SoyQuestionsScreen(
+                navController = navController,
+                tokenManager = tokenManager,
+                activityName = activityName,
+                triviaViewModelFactory = triviaViewModelFactory
+            )
+        }
+
     }
 }
 
