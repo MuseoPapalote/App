@@ -23,9 +23,14 @@ import androidx.navigation.NavHostController
 import com.example.papalote.R
 import com.example.papalote.ui.theme.components.CustomBottomBar
 import com.example.papalote.utils.LanguageManager
+import com.example.papalote.utils.TokenManager
 
 @Composable
-fun ZonasScreen(navController: NavHostController, onZoneClick: (String) -> Unit, onBack: () -> Unit) {
+fun ZonasScreen(
+    navController: NavHostController,
+    tokenManager: TokenManager,
+    onBack: () -> Unit
+) {
     // Definir los textos dinámicamente según el idioma
     val titleText = if (LanguageManager.language == "es") "Zonas" else "Zones"
     val volverText = if (LanguageManager.language == "es") "Volver" else "Back"
@@ -52,7 +57,10 @@ fun ZonasScreen(navController: NavHostController, onZoneClick: (String) -> Unit,
     Scaffold(
         bottomBar = {
             // Usamos CustomBottomBar aquí
-            CustomBottomBar(navController = navController)
+            CustomBottomBar(
+                navController = navController,
+                tokenManager = tokenManager
+            )
         }
     ) { paddingValues ->
         Box(
@@ -80,7 +88,18 @@ fun ZonasScreen(navController: NavHostController, onZoneClick: (String) -> Unit,
                 // Iconos y Etiquetas GRID
                 GridLayout(
                     items = gridItems,
-                    onZoneClick = onZoneClick
+                    onZoneClick = { zoneName ->
+                        val route = when (zoneName) {
+                            "Comprendo" -> "comprendo"
+                            "Comunico" -> "comunico"
+                            "Expreso" -> "expreso"
+                            "Pequeños" -> "pequenos"
+                            "Pertenezco" -> "pertenezco"
+                            "Soy" -> "soy"
+                            else -> "zones" // Ruta predeterminada en caso de error
+                        }
+                        navController.navigate(route)
+                    }
                 )
 
                 Button(

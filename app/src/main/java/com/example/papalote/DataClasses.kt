@@ -25,13 +25,25 @@ data class LoginResponse(
     val refreshToken: String
 )
 
+data class TriviaQuestion(
+    val id_pregunta: Int,
+    val texto_pregunta: String,
+    val opcion_1: String,
+    val opcion_2: String,
+    val opcion_3: String,
+    val respuesta_correcta: Int
+)
+
+data class TriviaQuestionsByZoneRequest(
+    val nombre_zona: String
+)
+
 data class TriviaAnswerRequest(
     val id_pregunta: Int,
     val opcion_seleccionada: Int
 )
 
 data class TriviaAnswerResponse(
-    val id_respuesta: Int,
     val id_usuario: Int,
     val id_pregunta: Int,
     val opcion_seleccionada: Int,
