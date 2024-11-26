@@ -108,10 +108,15 @@ suspend fun performGoogleSignIn(
 ) {
     try {
         val response = credentialManager.getCredential( context, request)
-        Log.d("GoogleSignIn", "Response: ${response.credential.data.getBundle("idToken")}")
-        val credential = response.credential
-        if(credential is GoogleIdTokenCredential){
-            val idToken = credential.idToken
+        Log.d("GoogleSignIn", "Response: ${response.credential.type}")
+        val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(response.credential.data)
+        Log.d("GoogleSignIn", "Google ID Token: ${googleIdTokenCredential.idToken}")
+        Log.d("GoogleSignIn", "Google User ID: ${googleIdTokenCredential.id}")
+        Log.d("GoogleSignIn", "Google Display Name: ${googleIdTokenCredential.displayName}")
+        Log.d("GoogleSignIn", "Google Given Name: ${googleIdTokenCredential.givenName}")
+        Log.d("GoogleSignIn", "Google Data: ${googleIdTokenCredential.data}")
+        if(googleIdTokenCredential is GoogleIdTokenCredential){
+            val idToken = googleIdTokenCredential.idToken
             if (idToken != null) {
                 onSignInSuccess(idToken)
             } else {
@@ -125,10 +130,10 @@ suspend fun performGoogleSignIn(
     }
 }
 
-fun sendIdToketoBackend(context: Context,idToken: String){
+fun sendIdTokentoBackend(context: Context,idToken: String){
     val url = "https://museoapi.org/auth/google/mobile"
     val requestBody = JSONObject()
-    requestBody.put("id_token", idToken)
+    requestBody.put("idToken", idToken)
 
     val request = JsonObjectRequest(
         Request.Method.POST,
@@ -482,7 +487,7 @@ fun RegisterScreen(
                                     context = context,
                                     onSignInSuccess = { idToken ->
                                         Log.d("GoogleSignIn", "ID Token: $idToken")
-                                        sendIdToketoBackend(context, idToken)
+                                        sendIdTokentoBackend(context, idToken)
                                     },
                                     onSignInFailure = { error ->
                                         Log.e("GoogleSignIn", "Error: $error")
