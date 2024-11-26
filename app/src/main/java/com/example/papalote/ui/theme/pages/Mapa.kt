@@ -105,7 +105,15 @@ fun MapaScreen(navController: NavHostController, onBack: () -> Unit) {
                             // Navegación a la zona correspondiente
                             zonas.forEach { (id, rect) ->
                                 if (relativeX in rect.left..rect.right && relativeY in rect.top..rect.bottom) {
-                                    navController.navigate("zoneDetail/$id")
+                                    // Navegar a la ruta específica según el id de la zona
+                                    when (id) {
+                                        "comprendo" -> navController.navigate("comprendo")
+                                        "comunico" -> navController.navigate("comunico")
+                                        "expreso" -> navController.navigate("expreso")
+                                        "pequenos" -> navController.navigate("pequenos")
+                                        "pertenezco" -> navController.navigate("pertenezco")
+                                        "soy" -> navController.navigate("soy")
+                                    }
                                 }
                             }
                         }
