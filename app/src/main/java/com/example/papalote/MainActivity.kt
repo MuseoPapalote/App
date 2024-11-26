@@ -26,7 +26,6 @@ import com.example.papalote.viewModelFactory.UserViewModelFactory
 import com.example.papalote.api.Repository
 import androidx.lifecycle.viewmodel.compose.viewModel
 
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,7 +84,6 @@ fun AppNavigation(navController: NavHostController, tokenManager: TokenManager) 
             )
         }
 
-
         // Pantalla de Zonas
         composable("zones") {
             ZonasScreen(
@@ -127,14 +125,18 @@ fun AppNavigation(navController: NavHostController, tokenManager: TokenManager) 
                 navController = navController
             )
         }
+
         // Pantalla de Mapa
         composable("mapa") {
-            MapaScreen() // Llama al Composable que contiene la pantalla del mapa
+            MapaScreen(
+                navController = navController,
+                onBack = { navController.navigateUp() } // Solución: Parámetros añadidos
+            )
         }
+
         composable("profile") {
             val userViewModel = UserViewModelFactory(tokenManager).create(UserViewModel::class.java)
             UserProfileScreen(viewModel = userViewModel)
         }
-
     }
 }
