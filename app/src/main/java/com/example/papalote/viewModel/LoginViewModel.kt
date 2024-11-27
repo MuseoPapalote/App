@@ -5,11 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.papalote.api.Repository
 import com.example.papalote.LoginRequest
 import com.example.papalote.states.LoginState
-import com.example.papalote.utils.TokenManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-
-import androidx.lifecycle.ViewModelProvider
 
 
 class LoginViewModel(private val repository: Repository) : ViewModel() { // Cambiamos para aceptar Repository
@@ -27,7 +24,8 @@ class LoginViewModel(private val repository: Repository) : ViewModel() { // Camb
 
             repository.loginUser(request).fold(
                 onSuccess = { response ->
-                    repository.saveToken(response.accessToken) // Usamos el método público de Repository
+                    repository.saveAccessToken(response.accessToken) // Usamos el método público de Repository
+                    repository.saveRefreshToken(response.refreshToken)
                     _loginState.value = LoginState.Success(response.accessToken)
                 },
                 onFailure = { exception ->

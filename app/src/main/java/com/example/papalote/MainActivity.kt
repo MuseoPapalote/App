@@ -82,7 +82,7 @@ fun AppNavigation(navController: NavHostController, tokenManager: TokenManager) 
             RegisterScreen(
                 viewModel = registrationViewModel,
                 onBack = { navController.navigateUp() },
-                onRegistrationSuccess = { navController.navigate("welcome") }
+                onRegistrationSuccess = { navController.navigate("zones") }
             )
         }
 

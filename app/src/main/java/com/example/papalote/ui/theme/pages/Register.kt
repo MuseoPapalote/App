@@ -76,29 +76,6 @@ fun createGoogleSignInRequest(): GetCredentialRequest {
     return googleSignInRequest
 }
 
-//fun handleSignIn(result: GetCredentialResponse){
-//    val credential = result.credential
-//    var responseJson: String? = null
-//    when (credential){
-//        is PublicKeyCredential -> {
-//            responseJson = credential.authenticationResponseJson
-//        }
-//
-//        is PasswordCredential -> {
-//            val username = credential.id
-//            val password = credential.password
-//        }
-//
-//        is CustomCredential -> {
-//            if(credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL){
-//                val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
-//                GoogleIdTokenVerifier verifier =
-//            }
-//        }
-//
-//    }
-//}
-
 suspend fun performGoogleSignIn(
     credentialManager: CredentialManager,
     request: GetCredentialRequest,
@@ -131,6 +108,7 @@ suspend fun performGoogleSignIn(
 }
 
 fun sendIdTokentoBackend(context: Context,idToken: String){
+    val repository = Repository(RetrofitClient.apiService, TokenManager(context))
     val url = "https://museoapi.org/auth/google/mobile"
     val requestBody = JSONObject()
     requestBody.put("idToken", idToken)
@@ -140,13 +118,14 @@ fun sendIdTokentoBackend(context: Context,idToken: String){
         url,
         requestBody,
         { response ->
-            val message = response.getString("message")
-            val user = response.getJSONObject("user")
-            val token = user.getString("token")
+            Log.d("GoogleSignIn", "Response: $response")
+            val accessToken = response.getString("accessToken")
+            val refreshToken = response.getString("refreshToken")
+            repository.saveAccessToken(accessToken)
+            repository.saveRefreshToken(refreshToken)
 
-            Log.d("GoogleSignIn", "Message: $message")
-            Log.d("GoogleSignIn", "Usuario: ${user.getString("name")}, Email: ${user.getString("email")}")
-            Log.d("GoogleSignIn", "Token: $token")
+            Log.d("GoogleSignIn", "Access Token: $accessToken")
+            Log.d("GoogleSignIn", "Refresh Token: $refreshToken")
         },
         { error ->
             Log.e("GoogleSignIn", "Error: ${error.message}")
@@ -488,6 +467,7 @@ fun RegisterScreen(
                                     onSignInSuccess = { idToken ->
                                         Log.d("GoogleSignIn", "ID Token: $idToken")
                                         sendIdTokentoBackend(context, idToken)
+                                        onRegistrationSuccess()
                                     },
                                     onSignInFailure = { error ->
                                         Log.e("GoogleSignIn", "Error: $error")

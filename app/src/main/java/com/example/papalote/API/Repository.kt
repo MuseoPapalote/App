@@ -3,15 +3,12 @@ import com.example.papalote.LoginRequest
 import com.example.papalote.LoginResponse
 import com.example.papalote.RegisterRequest
 import com.example.papalote.RegisterResponse
-import com.example.papalote.RetrofitClient.apiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import com.example.papalote.UserResponse
 import com.example.papalote.VisitRequest
 import com.example.papalote.VisitResponse
 import com.example.papalote.utils.TokenManager
-import retrofit2.http.Body
-import retrofit2.http.Header
 
 class Repository(private val apiService: ApiService, private val tokenManager: TokenManager) {
 
@@ -48,7 +45,7 @@ class Repository(private val apiService: ApiService, private val tokenManager: T
     suspend fun getUserInfo(): Result<UserResponse> {
         return withContext(Dispatchers.IO) {
             try {
-                val token = tokenManager.getToken()
+                val token = tokenManager.getAccessToken()
                 if (token == null) {
                     println("Token not found")
                     Result.failure(Exception("Token not found"))
@@ -70,7 +67,7 @@ class Repository(private val apiService: ApiService, private val tokenManager: T
     suspend fun registerVisit(request: VisitRequest): Result<VisitResponse>{
         return withContext(Dispatchers.IO){
             try{
-                val token = tokenManager.getToken()
+                val token = tokenManager.getAccessToken()
                 if(token == null){
                     println("Token not found")
                     Result.failure(Exception("Token not found"))
@@ -93,12 +90,20 @@ class Repository(private val apiService: ApiService, private val tokenManager: T
     }
 
     // Método público para guardar el token
-    fun saveToken(token: String) {
-        tokenManager.saveToken(token)
+    fun saveAccessToken(token: String) {
+        tokenManager.saveAccessToken(token)
+    }
+
+    fun saveRefreshToken(token: String) {
+        tokenManager.saveRefreshToken(token)
     }
 
     // Método público para obtener el token
-    fun getToken(): String? {
-        return tokenManager.getToken()
+    fun getAccessToken(): String? {
+        return tokenManager.getAccessToken()
+    }
+
+    fun getRefreshToken(): String? {
+        return tokenManager.getRefreshToken()
     }
 }

@@ -28,6 +28,8 @@ class RegistrationViewModel(private val repository: Repository) : ViewModel() { 
 
             repository.registerUser(request).fold(
                 onSuccess = { response ->
+                    repository.saveAccessToken(response.accessToken) // Usamos el método público de Repository
+                    repository.saveRefreshToken(response.refreshToken)
                     _registrationState.value = RegistrationState.Success(response.accessToken)
                 },
                 onFailure = { exception ->
