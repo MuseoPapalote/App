@@ -9,6 +9,8 @@ import com.example.papalote.UserResponse
 import com.example.papalote.VisitRequest
 import com.example.papalote.VisitResponse
 import com.example.papalote.utils.TokenManager
+import com.example.papalote.zoneRequest
+import com.example.papalote.zoneResponse
 
 class Repository(private val apiService: ApiService, private val tokenManager: TokenManager) {
 
@@ -89,6 +91,67 @@ class Repository(private val apiService: ApiService, private val tokenManager: T
         }
     }
 
+    suspend fun getZoneStats(request: zoneRequest): Result<zoneResponse>{
+        return withContext(Dispatchers.IO){
+            try{
+                val token = tokenManager.getAccessToken()
+                if(token == null){
+                    println("Token not found")
+                    Result.failure(Exception("Token not found"))
+                }else{
+                    println("Using token: Bearer $token")
+                    val response = apiService.getZoneStats("Bearer ${token}",request)
+                    println("Response: $response")
+                    if (response.isSuccessful){
+                        println("Zone stats fetched successfully")
+                        Result.success(response.body()!!)
+                    }else{
+                        println("No se pudo xd ${response.message()}")
+                        Result.failure(Exception("Failed to fetch zone stats: ${response.message()}"))
+                    }
+                }
+            } catch(e: Exception){
+                Result.failure(e)
+            }
+        }
+    }
+
+    suspend fun verifyRefreshToken(): Boolean {
+        val refreshToken = tokenManager.getRefreshToken() ?: return false
+        return try{
+            val response = apiService.verifyRefreshToken(mapOf("refreshToken" to refreshToken))
+            response.isSuccessful
+        }catch(e: Exception){
+            e.printStackTrace()
+            false
+        }
+    }
+
+    suspend fun refreshAccessToken(): String? {
+        val refreshToken = tokenManager.getRefreshToken() ?: return null
+        return try{
+            val response = apiService.refreshAccessToken(mapOf("refreshToken" to refreshToken))
+            if(response.isSuccessful){
+                val newAccessToken = response.body()?.accessToken
+                if(!newAccessToken.isNullOrEmpty()){
+                    tokenManager.saveAccessToken(newAccessToken)
+                }
+                newAccessToken
+            }else{
+                null
+            }
+        } catch(e: Exception){
+            e.printStackTrace()
+            null
+        }
+    }
+
+    suspend fun logout(){
+        apiService.logout(mapOf("refreshToken" to tokenManager.getRefreshToken()!!))
+        tokenManager.clearAccessToken()
+        tokenManager.clearRefreshToken()
+    }
+
     // Método público para guardar el token
     fun saveAccessToken(token: String) {
         tokenManager.saveAccessToken(token)
@@ -105,5 +168,14 @@ class Repository(private val apiService: ApiService, private val tokenManager: T
 
     fun getRefreshToken(): String? {
         return tokenManager.getRefreshToken()
+    }
+
+    // Método público para eliminar el token
+    fun clearAccessToken() {
+        tokenManager.clearAccessToken()
+    }
+
+    fun clearRefreshToken() {
+        tokenManager.clearRefreshToken()
     }
 }

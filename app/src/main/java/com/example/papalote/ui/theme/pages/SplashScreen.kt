@@ -1,11 +1,13 @@
 package com.example.papalote.ui.theme.pages
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,15 +18,33 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.papalote.R
+import com.example.papalote.api.Repository
 import kotlinx.coroutines.delay
 
 @Composable
-fun SplashScreen(navController: NavHostController) {
+fun SplashScreen(navController: NavHostController, repository: Repository) {
+
+    val coroutineScope = rememberCoroutineScope()
+
     // Navegar automáticamente después de 3 segundos
     LaunchedEffect(key1 = true) {
+        val isValidRefreshToken = repository.verifyRefreshToken()
+        println("Token válido: $isValidRefreshToken")
+
         delay(3000) // Espera 5 segundos
-        navController.navigate("Welcome") {
-            popUpTo("splash") { inclusive = true } // Elimina la pantalla de splash del back stack
+
+        if (isValidRefreshToken) {
+            val newAccessToken = repository.refreshAccessToken()
+            repository.saveAccessToken(newAccessToken ?: "")
+            Log.d("MainActivity", "Token válido, redirigiendo a zonas")
+            navController.navigate("zones") {
+                popUpTo("splash") { inclusive = true } // Elimina la pantalla de splash del back stack
+            }
+        } else {
+            Log.d("MainActivity", "Token no válido, redirigiendo a bienvenida")
+            navController.navigate("welcome") {
+                popUpTo("splash") { inclusive = true } // Elimina la pantalla de splash del back stack
+            }
         }
     }
 

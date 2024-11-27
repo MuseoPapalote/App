@@ -90,5 +90,28 @@ data class EncuestaResponse(
 data class UserResponse(
     val nombre: String,
     val email: String,
-    val fecha_nacimiento: Date // Asegúrate de manejar este tipo correctamente
+    val fecha_nacimiento: Date, // Asegúrate de manejar este tipo correctamente
+    val visitas: List<visitas>
+)
+
+data class visitas(
+    val nombre_exposicion: String,
+    val fecha_hora_visita: Date
+)
+
+data class refreshAccessTokenResponse(
+    val accessToken: String
+)
+
+
+data class zoneRequest(
+    val nombre_zona: String,
+)
+
+data class zoneResponse(
+    val total_exposiciones_activas: Int,
+    val exposiciones_visitadas: Int,
+    val porcentaje_avance: Int,
+    val total_visitas_unicas: Int,
+    val visitas: List<visitas>
 )

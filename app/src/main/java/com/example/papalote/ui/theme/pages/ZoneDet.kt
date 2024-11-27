@@ -8,6 +8,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,43 +20,103 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.papalote.R
+import com.example.papalote.states.ZoneStatsState
 import com.example.papalote.ui.theme.components.CustomBottomBar
 import com.example.papalote.utils.LanguageManager
+import com.example.papalote.viewModel.ZoneStatsViewModel
+import com.example.papalote.zoneResponse
 
 @Composable
 fun ZoneDetailScreen(
     zoneName: String,
     onBack: () -> Unit,
     navController: NavHostController,
-    onMedalClick: () -> Unit
+    onMedalClick: () -> Unit,
+    viewModel: ZoneStatsViewModel = viewModel()
 ) {
-    Scaffold(
-        bottomBar = {
-            CustomBottomBar(navController = navController)
+
+    val zoneStatsState by viewModel.zoneState.collectAsState()
+
+    LaunchedEffect(zoneStatsState) {
+        if (zoneStatsState is ZoneStatsState.Idle) {
+            println("Llamando a fetchZoneStats desde ZoneDetailScreen...")
+            viewModel.fetchZoneStats(zoneName)
         }
-    ) { paddingValues: PaddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White)
-                .padding(paddingValues)
-        ) {
-            Column(
+    }
+
+    when(zoneStatsState){
+        is ZoneStatsState.Loading -> {
+            println("Estado actual: Loading")
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp)
+                    .background(Color(0xFFD6E800)),
+                contentAlignment = Alignment.Center
             ) {
-                HeaderWithLogo()
-                Header(zoneName = zoneName)
+                Text(text = "Cargando...", fontSize = 20.sp, color = Color.White)
+            }
+        }
+        is ZoneStatsState.Success ->{
+            println("Estado actual: Success")
+            val zoneStats = (zoneStatsState as ZoneStatsState.Success).zoneStats
+            println("Mostrando datos de la zona: $zoneStats")
+            Scaffold(
+                bottomBar = {
+                    CustomBottomBar(navController = navController)
+                }
+            ) { paddingValues: PaddingValues ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.White)
+                        .padding(paddingValues)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp)
+                    ) {
+                        HeaderWithLogo()
+                        Header(zoneName = zoneName)
 
-                ActivitiesSection(navController = navController, zoneName = zoneName)
+                        ActivitiesSection(zoneStats = zoneStats!! ,navController = navController, zoneName = zoneName)
 
-                MedalSection(zoneName = zoneName, onMedalClick = onMedalClick)
+                        MedalSection(zoneName = zoneName, onMedalClick = onMedalClick)
+                    }
+                }
+            }
+
+        }
+        is ZoneStatsState.Error -> {
+            println("Estado actual: Error")
+            val errorMessage = (zoneStatsState as ZoneStatsState.Error).message
+            println("Error: $errorMessage")
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0xFFD6E800)),
+                contentAlignment = Alignment.Center
+            ){
+                Text(text = "Error: $errorMessage", fontSize = 20.sp, color = Color.White)
+            }
+        }
+        is ZoneStatsState.Idle -> {
+            println("Estado actual: Idle")
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0xFFD6E800)),
+                contentAlignment = Alignment.Center
+            ){
+                Text(text = "Estado Idle", fontSize = 20.sp, color = Color.White)
             }
         }
     }
+
+
 }
 
 @Composable
@@ -111,7 +174,8 @@ fun Header(zoneName: String) {
 }
 
 @Composable
-fun ActivitiesSection(navController: NavHostController, zoneName: String) {
+fun ActivitiesSection(zoneStats:zoneResponse, navController: NavHostController, zoneName: String) {
+
     // Definir los textos según el idioma seleccionado
     val activity1Text = if (LanguageManager.language == "es") "Actividad 1" else "Activity 1"
     val activity2Text = if (LanguageManager.language == "es") "Actividad 2" else "Activity 2"
@@ -125,21 +189,21 @@ fun ActivitiesSection(navController: NavHostController, zoneName: String) {
         ActivityCard(
             color = Color(0xFFE6A957),
             icon = painterResource(id = R.drawable.calendario),
-            text = activity1Text,
+            text = "Progreso: "+zoneStats.porcentaje_avance.toString() + "%",
             onClick = { navController.navigate("dinosaur/$zoneName") }
         )
         Spacer(modifier = Modifier.height(8.dp))
         ActivityCard(
             color = Color(0xFF6AB98D),
             icon = painterResource(id = R.drawable.calendario),
-            text = activity2Text,
+            text = "Visitas: "+zoneStats.total_visitas_unicas.toString(),
             onClick = { navController.navigate("dinosaur/$zoneName") }
         )
         Spacer(modifier = Modifier.height(8.dp))
         ActivityCard(
             color = Color(0xFF55A8E2),
             icon = painterResource(id = R.drawable.calendario),
-            text = activity3Text,
+            text = if (zoneStats.visitas.isNotEmpty()) "Ultima visita: "+zoneStats.visitas[0].nombre_exposicion else "activity1Text",
             onClick = { navController.navigate("dinosaur/$zoneName") }
         )
     }

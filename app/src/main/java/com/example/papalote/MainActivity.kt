@@ -26,6 +26,8 @@ import com.example.papalote.viewModelFactory.UserViewModelFactory
 import com.example.papalote.api.Repository
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.papalote.viewModel.VisitViewModel
+import com.example.papalote.viewModel.ZoneStatsViewModel
+import com.example.papalote.viewModelFactory.ZoneStatsViewModelFactory
 
 
 class MainActivity : ComponentActivity() {
@@ -51,7 +53,7 @@ fun AppNavigation(navController: NavHostController, tokenManager: TokenManager) 
 
         // Pantalla de Splash
         composable("splash") {
-            SplashScreen(navController = navController)
+            SplashScreen(navController = navController, Repository(RetrofitClient.apiService, tokenManager))
         }
 
         // Pantalla de bienvenida
@@ -105,7 +107,8 @@ fun AppNavigation(navController: NavHostController, tokenManager: TokenManager) 
                 zoneName = zoneName,
                 onBack = { navController.navigateUp() },
                 navController = navController,
-                onMedalClick = { navController.navigate("insignias") }
+                onMedalClick = { navController.navigate("insignias") },
+                viewModel = ZoneStatsViewModel(repository)
             )
         }
 
@@ -134,7 +137,10 @@ fun AppNavigation(navController: NavHostController, tokenManager: TokenManager) 
         }
         composable("profile") {
             val userViewModel = UserViewModelFactory(tokenManager).create(UserViewModel::class.java)
-            UserProfileScreen(viewModel = userViewModel)
+            UserProfileScreen(
+                viewModel = userViewModel,
+                navController = navController
+                )
         }
 
     }

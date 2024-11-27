@@ -31,7 +31,7 @@ class TokenManager(context: Context) {
     }
 
     // Eliminar el token (logout o expiración)
-    fun clearToken() {
+    fun clearAccessToken() {
         prefs.edit().remove(KEY_ACCESS_TOKEN).apply()
     }
 

@@ -37,5 +37,13 @@ class UserViewModel(private val repository: Repository) : ViewModel() {
             )
         }
     }
+
+    fun logoutUser(){
+        viewModelScope.launch{
+            repository.logout()
+            _userState.value = UserState.Idle
+        }
+    }
+
 }
 
