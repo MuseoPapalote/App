@@ -15,7 +15,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.papalote.R
-
+import com.example.papalote.utils.TokenManager
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.Star
+import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Add
@@ -23,12 +26,31 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.example.papalote.EncuestaRequest
+import com.example.papalote.viewModel.EncuestaViewModel
+import com.example.papalote.viewModelFactory.EncuestaViewModelFactory
+import com.example.papalote.api.Repository
+import com.example.papalote.RetrofitClient
+import androidx.lifecycle.viewmodel.compose.viewModel
+
 
 @Composable
 fun CustomBottomBar(
-    navController: NavHostController
+    tokenManager: TokenManager,
+    navController: NavHostController,
 ) {
+    // Instancia del EncuestaViewModel
+    val encuestaViewModel: EncuestaViewModel = viewModel(
+        factory = EncuestaViewModelFactory(
+            repository = Repository(
+                apiService = RetrofitClient.apiService,
+                tokenManager = tokenManager
+            )
+        )
+    )
+
     var isMenuExpanded by remember { mutableStateOf(false) }
+    var showSurveyDialog by remember { mutableStateOf(false) } // Controla la visibilidad del popup
 
     Box(
         modifier = Modifier
@@ -47,7 +69,7 @@ fun CustomBottomBar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Ícono de Mapa
-            IconButton(onClick = { navController.navigate("mapa") }) { // Cambiamos "search" por "mapa"
+            IconButton(onClick = { navController.navigate("mapa") }) {
                 Icon(
                     painter = painterResource(id = R.drawable.map),
                     contentDescription = "Mapa",
@@ -56,7 +78,7 @@ fun CustomBottomBar(
                 )
             }
 
-            // Ícono de Home (redirige a la página de Zonas)
+            // Ícono de Home
             IconButton(onClick = { navController.navigate("zones") }) {
                 Image(
                     painter = painterResource(id = R.drawable.hoome),
@@ -75,14 +97,14 @@ fun CustomBottomBar(
             }
         }
 
-        // Botón flotante "+" (más pequeño)
+        // Botón flotante "+"
         FloatingActionButton(
             onClick = { isMenuExpanded = true },
-            backgroundColor = Color(0xFF0033CC), // Azul para el botón flotante
+            backgroundColor = Color(0xFF0033CC),
             modifier = Modifier
                 .align(Alignment.TopCenter)
-                .offset(y = (-40).dp) // Ajustar la posición del botón flotante
-                .size(60.dp) // Tamaño reducido del botón flotante
+                .offset(y = (-40).dp)
+                .size(60.dp)
                 .clip(CircleShape)
         ) {
             Icon(
@@ -101,70 +123,134 @@ fun CustomBottomBar(
                 navController.navigate("profile")
                 isMenuExpanded = false
             }) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_profile),
-                        contentDescription = "Perfil",
-                        tint = Color(0xFFA4CD39),
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Text(
-                        text = "Perfil",
-                        color = Color.Black,
-                        style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Normal)
-                    )
-                }
+                MenuItemRow(iconRes = R.drawable.ic_profile, text = "Perfil", color = Color(0xFFA4CD39))
             }
 
             DropdownMenuItem(onClick = {
                 navController.navigate("badges")
                 isMenuExpanded = false
             }) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_badges),
-                        contentDescription = "Insignias",
-                        tint = Color(0xFFA4CD39),
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Text(
-                        text = "Insignias",
-                        color = Color.Black,
-                        style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Normal)
-                    )
-                }
+                MenuItemRow(iconRes = R.drawable.ic_badges, text = "Insignias", color = Color(0xFFA4CD39))
             }
 
             DropdownMenuItem(onClick = {
                 navController.navigate("zones")
                 isMenuExpanded = false
             }) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_zones),
-                        contentDescription = "Zonas",
-                        tint = Color(0xFFA4CD39),
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Text(
-                        text = "Zonas",
-                        color = Color.Black,
-                        style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Normal)
-                    )
-                }
+                MenuItemRow(iconRes = R.drawable.ic_zones, text = "Zonas", color = Color(0xFFA4CD39))
             }
+
+            // Botón de "Cerrar sesión"
+            DropdownMenuItem(onClick = {
+                showSurveyDialog = true // Muestra el popup
+                isMenuExpanded = false
+            }) {
+                MenuItemRow(iconRes = R.drawable.logout, text = "Cerrar sesión", color = Color.Red)
+            }
+        }
+    }
+
+    // Encuesta de calificación
+    if (showSurveyDialog) {
+        SurveyDialog(
+            onDismiss = { showSurveyDialog = false },
+            onSubmit = { rating, comment ->
+                navController.navigate("welcome") {
+                    popUpTo("zones") { inclusive = true }
+                }
+                showSurveyDialog = false
+                Log.d("Encuesta", "Calificación: $rating, Comentario: $comment")
+            },
+            encuestaViewModel = encuestaViewModel // Aquí pasamos el ViewModel
+        )
+    }
+}
+
+@Composable
+fun MenuItemRow(iconRes: Int, text: String, color: Color) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start
+    ) {
+        Icon(
+            painter = painterResource(id = iconRes),
+            contentDescription = text,
+            tint = color,
+            modifier = Modifier.size(24.dp)
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        Text(
+            text = text,
+            color = Color.Black,
+            style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Normal)
+        )
+    }
+}
+
+@Composable
+fun SurveyDialog(
+    onDismiss: () -> Unit,
+    onSubmit: (Int, String) -> Unit,
+    encuestaViewModel: EncuestaViewModel // Agregar ViewModel
+) {
+    var rating by remember { mutableStateOf(0) }
+    var comment by remember { mutableStateOf("") }
+    val encuestaState by encuestaViewModel.encuestaState.collectAsState()
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Encuesta") },
+        text = {
+            Column {
+                Text("Calificación general de la visita (1-5):")
+                Row {
+                    (1..5).forEach { star ->
+                        IconButton(onClick = { rating = star }) {
+                            Icon(
+                                imageVector = if (star <= rating) Icons.Filled.Star else Icons.Outlined.Star,
+                                contentDescription = "Estrella $star",
+                                tint = if (star <= rating) Color.Yellow else Color.Gray,
+                                modifier = Modifier.size(32.dp)
+                            )
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Text("Comentario:")
+                TextField(
+                    value = comment,
+                    onValueChange = { comment = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = { Text("Escribe un comentario...") }
+                )
+            }
+        },
+        confirmButton = {
+            Button(onClick = {
+                if (rating > 0 && comment.isNotEmpty()) {
+                    val encuestaRequest = EncuestaRequest(
+                        calificacion_general = rating,
+                        comentarios = comment
+                    )
+                    encuestaViewModel.crearEncuesta(encuestaRequest)
+                    onSubmit(rating, comment)
+                }
+            }) {
+                Text("Enviar")
+            }
+        },
+        dismissButton = {
+            OutlinedButton(onClick = onDismiss) {
+                Text("Cancelar")
+            }
+        }
+    )
+    // Mostrar un mensaje de éxito o error basado en el estado de la encuesta
+    encuestaState?.let { result ->
+        result.onSuccess {
+            println("Encuesta enviada con éxito: $it")
+        }.onFailure {
+            println("Error al enviar encuesta: ${it.message}")
         }
     }
 }

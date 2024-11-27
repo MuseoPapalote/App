@@ -9,6 +9,14 @@ import com.example.papalote.VisitResponse
 import com.example.papalote.refreshAccessTokenResponse
 import com.example.papalote.zoneRequest
 import com.example.papalote.zoneResponse
+import com.example.papalote.TriviaAnswerRequest
+import com.example.papalote.TriviaAnswerResponse
+import com.example.papalote.TriviaAnswersResponse
+import com.example.papalote.TriviaQuestion
+import com.example.papalote.TriviaQuestionsByZoneRequest
+import com.example.papalote.EncuestaRequest
+import com.example.papalote.EncuestaResponse
+
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -53,6 +61,28 @@ interface ApiService {
     suspend fun logout(
         @Body refreshToken: Map<String, String>
     ): Response<Unit>
+
+    // Actualización con los nuevos nombres
+    @POST("/preguntaTrivia")
+    suspend fun obtenerPreguntasPorZona(
+        @Header("Authorization") token: String,
+        @Body zonaRequest: TriviaQuestionsByZoneRequest
+    ): Response<List<TriviaQuestion>>
+
+    @POST("/respuestaTrivia")
+    suspend fun enviarTriviaAnswer(
+        @Header("Authorization") token: String, // El token se pasará como "Bearer <access_token>"
+        @Body triviaAnswerRequest: TriviaAnswerRequest
+    ):Response<TriviaAnswerResponse>
+
+    @GET("/respuestaTrivia")
+    suspend fun obtenerTriviaAnswers(): TriviaAnswersResponse
+
+    @POST("/encuesta")
+    suspend fun crearEncuesta(
+        @Header("Authorization") token: String,
+        @Body request: EncuestaRequest
+    ): Response<EncuestaResponse>
 
 }
 

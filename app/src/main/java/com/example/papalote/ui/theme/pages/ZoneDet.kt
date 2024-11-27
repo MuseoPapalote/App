@@ -26,6 +26,7 @@ import com.example.papalote.R
 import com.example.papalote.states.ZoneStatsState
 import com.example.papalote.ui.theme.components.CustomBottomBar
 import com.example.papalote.utils.LanguageManager
+import com.example.papalote.utils.TokenManager
 import com.example.papalote.viewModel.ZoneStatsViewModel
 import com.example.papalote.zoneResponse
 
@@ -35,6 +36,7 @@ fun ZoneDetailScreen(
     onBack: () -> Unit,
     navController: NavHostController,
     onMedalClick: () -> Unit,
+    tokenManager: TokenManager,
     viewModel: ZoneStatsViewModel = viewModel()
 ) {
 
@@ -65,7 +67,7 @@ fun ZoneDetailScreen(
             println("Mostrando datos de la zona: $zoneStats")
             Scaffold(
                 bottomBar = {
-                    CustomBottomBar(navController = navController)
+                    CustomBottomBar(navController = navController, tokenManager = tokenManager)
                 }
             ) { paddingValues: PaddingValues ->
                 Box(

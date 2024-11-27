@@ -23,11 +23,14 @@ import com.example.papalote.viewModel.RegistrationViewModel
 import com.example.papalote.viewModelFactory.RegistrationViewModelFactory
 import com.example.papalote.viewModelFactory.LoginViewModelFactory
 import com.example.papalote.viewModelFactory.UserViewModelFactory
+import com.example.papalote.viewModelFactory.TriviaViewModelFactory
 import com.example.papalote.api.Repository
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.papalote.ui.theme.pages.ZoneDetailScreen
 import com.example.papalote.viewModel.VisitViewModel
 import com.example.papalote.viewModel.ZoneStatsViewModel
 import com.example.papalote.viewModelFactory.ZoneStatsViewModelFactory
+
 
 
 class MainActivity : ComponentActivity() {
@@ -93,6 +96,7 @@ fun AppNavigation(navController: NavHostController, tokenManager: TokenManager) 
         composable("zones") {
             ZonasScreen(
                 navController = navController,
+                tokenManager = tokenManager,
                 onZoneClick = { zoneName ->
                     navController.navigate("zoneDetail/$zoneName")
                 },
@@ -108,13 +112,17 @@ fun AppNavigation(navController: NavHostController, tokenManager: TokenManager) 
                 onBack = { navController.navigateUp() },
                 navController = navController,
                 onMedalClick = { navController.navigate("insignias") },
+                tokenManager = tokenManager,
                 viewModel = ZoneStatsViewModel(repository)
             )
         }
 
         // Pantalla de Insignias
         composable("insignias") {
-            InsigniasScreen(navController = navController)
+            InsigniasScreen(
+                navController = navController,
+                tokenManager = tokenManager // Pasa el tokenManager aquí
+            )
         }
 
         // Pantalla de Escaneo de QR
@@ -123,17 +131,21 @@ fun AppNavigation(navController: NavHostController, tokenManager: TokenManager) 
         }
 
         // Pantalla de Dinosaurio (ComunicoScreen)
-        composable("dinosaur/{zoneName}") { backStackEntry ->
-            val zoneName = backStackEntry.arguments?.getString("zoneName") ?: "Zona Desconocida"
-            ComunicoScreen(
-                zoneName = zoneName,
-                onBack = { navController.navigateUp() },
-                navController = navController
-            )
-        }
+        //composable("dinosaur/{zoneName}") { backStackEntry ->
+            //val zoneName = backStackEntry.arguments?.getString("zoneName") ?: "Zona Desconocida"
+            //ComunicoScreen(
+           //     zoneName = zoneName,
+         //       onBack = { navController.navigateUp() },
+       //         navController = navController,
+     //           tokenManager = tokenManager
+   //         )
+ //       }
         // Pantalla de Mapa
         composable("mapa") {
-            MapaScreen() // Llama al Composable que contiene la pantalla del mapa
+            MapaScreen(
+                navController = navController,
+                onBack = { navController.navigateUp() } // Solución: Parámetros añadidos
+            )
         }
         composable("profile") {
             val userViewModel = UserViewModelFactory(tokenManager).create(UserViewModel::class.java)
@@ -142,6 +154,79 @@ fun AppNavigation(navController: NavHostController, tokenManager: TokenManager) 
                 navController = navController
                 )
         }
-
+//
+//        //Para la navegacion del comprendoscreen
+//        val triviaViewModelFactory = TriviaViewModelFactory(repository)
+//        composable("comprendo_questions/{activityName}") { backStackEntry ->
+//            val activityName = backStackEntry.arguments?.getString("activityName") ?: "Comprendo 1"
+//            ComprendoQuestionsScreen(
+//                navController = navController,
+//                tokenManager = tokenManager,
+//                activityName = activityName,
+//                triviaViewModelFactory = triviaViewModelFactory
+//            )
+//        }
+//
+//        //Para la navegacion del comunicoscreen
+//        //val triviaViewModelFactory = TriviaViewModelFactory(repository)
+//        composable("comunico_questions/{activityName}") { backStackEntry ->
+//            val activityName = backStackEntry.arguments?.getString("activityName") ?: "Comunico 1"
+//            ComunicoQuestionsScreen(
+//                navController = navController,
+//                tokenManager = tokenManager,
+//                activityName = activityName,
+//                triviaViewModelFactory = triviaViewModelFactory
+//            )
+//        }
+//
+//        //Para la navegacion del expresoscreen
+//        //val triviaViewModelFactory = TriviaViewModelFactory(repository)
+//        composable("expreso_questions/{activityName}") { backStackEntry ->
+//            val activityName = backStackEntry.arguments?.getString("activityName") ?: "Expreso 1"
+//            ExpresoQuestionsScreen(
+//                navController = navController,
+//                tokenManager = tokenManager,
+//                activityName = activityName,
+//                triviaViewModelFactory = triviaViewModelFactory
+//            )
+//        }
+//
+//        //Para la navegacion del pequeñoscreen
+//        //val triviaViewModelFactory = TriviaViewModelFactory(repository)
+//        composable("pequeños_questions/{activityName}") { backStackEntry ->
+//            val activityName = backStackEntry.arguments?.getString("activityName") ?: "Pequeños 1"
+//            PequeñosQuestionsScreen(
+//                navController = navController,
+//                tokenManager = tokenManager,
+//                activityName = activityName,
+//                triviaViewModelFactory = triviaViewModelFactory
+//            )
+//        }
+//
+//        //Para la navegacion del pertenezcoscreen
+//        //val triviaViewModelFactory = TriviaViewModelFactory(repository)
+//        composable("pertenezco_questions/{activityName}") { backStackEntry ->
+//            val activityName = backStackEntry.arguments?.getString("activityName") ?: "Pertenezco 1"
+//            PertenezcoQuestionsScreen(
+//                navController = navController,
+//                tokenManager = tokenManager,
+//                activityName = activityName,
+//                triviaViewModelFactory = triviaViewModelFactory
+//            )
+//        }
+//
+//        //Para la navegacion del soyscreen
+//        //val triviaViewModelFactory = TriviaViewModelFactory(repository)
+//        composable("soy_questions/{activityName}") { backStackEntry ->
+//            val activityName = backStackEntry.arguments?.getString("activityName") ?: "Soy 1"
+//            SoyQuestionsScreen(
+//                navController = navController,
+//                tokenManager = tokenManager,
+//                activityName = activityName,
+//                triviaViewModelFactory = triviaViewModelFactory
+//            )
+//        }
+//
     }
 }
+
