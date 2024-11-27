@@ -164,7 +164,10 @@ fun AppNavigation(navController: NavHostController, tokenManager: TokenManager) 
  //       }
         // Pantalla de Mapa
         composable("mapa") {
-            MapaScreen() // Llama al Composable que contiene la pantalla del mapa
+            MapaScreen(
+                navController = navController,
+                onBack = { navController.navigateUp() } // Solución: Parámetros añadidos
+            )
         }
         composable("profile") {
             val userViewModel = UserViewModelFactory(tokenManager).create(UserViewModel::class.java)
