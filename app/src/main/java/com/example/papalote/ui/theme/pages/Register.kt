@@ -34,6 +34,8 @@ import java.util.Locale
 import java.util.Calendar
 import android.app.DatePickerDialog
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -134,6 +136,7 @@ fun sendIdTokentoBackend(context: Context,idToken: String){
     Volley.newRequestQueue(context).add(request)
 }
 
+
 fun hashPassword(password: String): String {
     val bytes = password.toByteArray(UTF_8)
     val md = MessageDigest.getInstance("SHA-256")
@@ -147,6 +150,13 @@ fun RegisterScreen(
     onBack: () -> Unit,
     onRegistrationSuccess: () -> Unit
 ) {
+    var accessToken by remember { mutableStateOf("") }
+    var refreshToken by remember { mutableStateOf("") }
+
+    fun onFacebookLoginSuccess(receivedAccesstoken: String, receivedRefreshToken: String){
+        accessToken = receivedAccesstoken
+        refreshToken = receivedRefreshToken
+    }
 
     val context = LocalContext.current
     val credentialManager = remember { CredentialManager.create(context)}
@@ -449,7 +459,13 @@ fun RegisterScreen(
                     contentDescription = "Facebook",
                     modifier = Modifier
                         .size(40.dp)
-                        .padding(end = 20.dp),
+                        .padding(end = 20.dp)
+                        .clickable{
+                            val deepLink = "yourapp://auth/facebook/callback?accessToken=${accessToken}&refreshToken=${refreshToken}"
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(deepLink))
+
+                            context.startActivity(intent)
+                        },
                     contentScale = ContentScale.Fit
                 )
                 Image(
