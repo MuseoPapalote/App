@@ -21,11 +21,13 @@ import com.example.papalote.R
 import com.example.papalote.ui.theme.components.CustomBottomBar
 import com.example.papalote.utils.LanguageManager
 import com.example.papalote.utils.TokenManager
+import com.example.papalote.viewModel.EncuestaViewModel
 
 @Composable
 fun InsigniasScreen(navController: NavHostController , tokenManager: TokenManager) {
     // Obtener el idioma actual
     val currentLanguage = LanguageManager.language
+
 
     // Textos dependiendo del idioma
     val titleText = if (currentLanguage == "es") "Insignias" else "Badges"

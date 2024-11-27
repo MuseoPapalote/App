@@ -9,6 +9,8 @@ import com.example.papalote.TriviaAnswerResponse
 import com.example.papalote.TriviaAnswersResponse
 import com.example.papalote.TriviaQuestion
 import com.example.papalote.TriviaQuestionsByZoneRequest
+import com.example.papalote.EncuestaRequest
+import com.example.papalote.EncuestaResponse
 
 import retrofit2.Response
 import retrofit2.http.Body
@@ -43,6 +45,12 @@ interface ApiService {
 
     @GET("/respuestaTrivia")
     suspend fun obtenerTriviaAnswers(): TriviaAnswersResponse
+
+    @POST("/encuesta")
+    suspend fun crearEncuesta(
+        @Header("Authorization") token: String,
+        @Body request: EncuestaRequest
+    ): Response<EncuestaResponse>
 
 }
 

@@ -26,12 +26,29 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.example.papalote.EncuestaRequest
+import com.example.papalote.viewModel.EncuestaViewModel
+import com.example.papalote.viewModelFactory.EncuestaViewModelFactory
+import com.example.papalote.api.Repository
+import com.example.papalote.RetrofitClient
+import androidx.lifecycle.viewmodel.compose.viewModel
+
 
 @Composable
 fun CustomBottomBar(
     tokenManager: TokenManager,
-    navController: NavHostController
+    navController: NavHostController,
 ) {
+    // Instancia del EncuestaViewModel
+    val encuestaViewModel: EncuestaViewModel = viewModel(
+        factory = EncuestaViewModelFactory(
+            repository = Repository(
+                apiService = RetrofitClient.apiService,
+                tokenManager = tokenManager
+            )
+        )
+    )
+
     var isMenuExpanded by remember { mutableStateOf(false) }
     var showSurveyDialog by remember { mutableStateOf(false) } // Controla la visibilidad del popup
 
@@ -144,7 +161,8 @@ fun CustomBottomBar(
                 }
                 showSurveyDialog = false
                 Log.d("Encuesta", "Calificación: $rating, Comentario: $comment")
-            }
+            },
+            encuestaViewModel = encuestaViewModel // Aquí pasamos el ViewModel
         )
     }
 }
@@ -173,10 +191,12 @@ fun MenuItemRow(iconRes: Int, text: String, color: Color) {
 @Composable
 fun SurveyDialog(
     onDismiss: () -> Unit,
-    onSubmit: (Int, String) -> Unit
+    onSubmit: (Int, String) -> Unit,
+    encuestaViewModel: EncuestaViewModel // Agregar ViewModel
 ) {
     var rating by remember { mutableStateOf(0) }
     var comment by remember { mutableStateOf("") }
+    val encuestaState by encuestaViewModel.encuestaState.collectAsState()
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -207,7 +227,16 @@ fun SurveyDialog(
             }
         },
         confirmButton = {
-            Button(onClick = { onSubmit(rating, comment) }) {
+            Button(onClick = {
+                if (rating > 0 && comment.isNotEmpty()) {
+                    val encuestaRequest = EncuestaRequest(
+                        calificacion_general = rating,
+                        comentarios = comment
+                    )
+                    encuestaViewModel.crearEncuesta(encuestaRequest)
+                    onSubmit(rating, comment)
+                }
+            }) {
                 Text("Enviar")
             }
         },
@@ -217,4 +246,12 @@ fun SurveyDialog(
             }
         }
     )
+    // Mostrar un mensaje de éxito o error basado en el estado de la encuesta
+    encuestaState?.let { result ->
+        result.onSuccess {
+            println("Encuesta enviada con éxito: $it")
+        }.onFailure {
+            println("Error al enviar encuesta: ${it.message}")
+        }
+    }
 }

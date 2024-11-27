@@ -9,6 +9,8 @@ import com.example.papalote.TriviaQuestion
 import com.example.papalote.TriviaQuestionsByZoneRequest
 import com.example.papalote.TriviaAnswersResponse
 import com.example.papalote.TriviaAnswersListType
+import com.example.papalote.EncuestaRequest
+import com.example.papalote.EncuestaResponse
 import com.example.papalote.RetrofitClient.apiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -118,6 +120,36 @@ class Repository(private val apiService: ApiService, private val tokenManager: T
             }
         }
     }
+
+    suspend fun crearEncuesta(request: EncuestaRequest): Result<EncuestaResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val token = tokenManager.getToken()
+                if (token.isNullOrEmpty()) {
+                    Result.failure(Exception("Token no encontrado. El usuario no está autenticado."))
+                } else {
+                    val response = apiService.crearEncuesta("Bearer $token", request)
+                    if (response.isSuccessful) {
+                        val respuesta = response.body()
+                        if (respuesta != null) {
+                            println("Respuesta del backend recibida: $respuesta")
+                            Result.success(respuesta)
+                        } else {
+                            println("Error: Respuesta del backend es nula")
+                            Result.failure(Exception("Respuesta nula del backend"))
+                        }
+                    } else {
+                        println("Error recibido del backend: ${response.message()}")
+                        Result.failure(Exception("Error al crear la encuesta: ${response.message()}"))
+                    }
+                }
+            } catch (e: Exception) {
+                println("Excepción al realizar la solicitud: ${e.message}")
+                Result.failure(e)
+            }
+        }
+    }
+
 
 
     suspend fun obtenerTriviaAnswers(): List<TriviaAnswersListType> {
