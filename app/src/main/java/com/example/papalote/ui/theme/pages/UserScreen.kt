@@ -84,7 +84,7 @@ fun UserProfileScreen(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 UserInfoItem(icon = R.drawable.userscc, label = user.nombre)
-                UserInfoItem(icon = R.drawable.birthday_icon, label = user.fecha_nacimiento.toString())
+                UserInfoItem(icon = R.drawable.birthday_icon, label = user.fecha_nacimiento?.toString() ?: "" )
                 UserInfoItem(icon = R.drawable.lock_icon, label = user.email, editable = false)
                 Spacer(modifier = Modifier.height(16.dp))
                 InsigniasInfo(total = user.visitas.size)

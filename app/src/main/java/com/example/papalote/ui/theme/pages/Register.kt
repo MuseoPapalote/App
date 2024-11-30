@@ -412,7 +412,7 @@ fun RegisterScreen(
                         hashedPass=hashPassword(password)
                         viewModel.registerUser(email, birthDate, username, hashedPass)
 
-                        showHashDialog = true
+                        showHashDialog = false
                         showError = false
                     } else {
                         showError = true

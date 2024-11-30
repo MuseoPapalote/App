@@ -1,5 +1,6 @@
 package com.example.papalote
 
+import kotlinx.serialization.Serializable
 import java.util.Date
 
 
@@ -25,6 +26,7 @@ data class LoginResponse(
     val refreshToken: String
 )
 
+@Serializable
 data class TriviaQuestion(
     val id_pregunta: Int,
     val texto_pregunta: String,

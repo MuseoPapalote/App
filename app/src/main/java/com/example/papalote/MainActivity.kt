@@ -3,9 +3,12 @@ package com.example.papalote
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -26,11 +29,14 @@ import com.example.papalote.viewModelFactory.UserViewModelFactory
 import com.example.papalote.viewModelFactory.TriviaViewModelFactory
 import com.example.papalote.api.Repository
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.papalote.ui.theme.components.QuestionCard
 import com.example.papalote.ui.theme.pages.ZoneDetailScreen
+import com.example.papalote.viewModel.TriviaViewModel
 import com.example.papalote.viewModel.VisitViewModel
 import com.example.papalote.viewModel.ZoneStatsViewModel
 import com.example.papalote.viewModelFactory.ZoneStatsViewModelFactory
-
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 
 
 class MainActivity : ComponentActivity() {
@@ -113,9 +119,42 @@ fun AppNavigation(navController: NavHostController, tokenManager: TokenManager) 
                 navController = navController,
                 onMedalClick = { navController.navigate("insignias") },
                 tokenManager = tokenManager,
-                viewModel = ZoneStatsViewModel(repository)
+                viewModel = ZoneStatsViewModel(repository),
+                viewModel2 = TriviaViewModel(repository),
+                onActivityClick = { triviaQuestion ->
+                    navController.navigate("activityDetail/${triviaQuestion}")
+                }
             )
         }
+
+        composable("questionCard/{triviaQuestionJson}") { backStackEntry ->
+            val triviaQuestionJson = backStackEntry.arguments?.getString("triviaQuestionJson") ?: return@composable
+
+            // Deserializa el JSON para obtener el objeto TriviaQuestion
+            val triviaQuestion = Json.decodeFromString<TriviaQuestion>(triviaQuestionJson)
+
+            val opciones = List<String>(3){
+                triviaQuestion.opcion_1
+                triviaQuestion.opcion_2
+                triviaQuestion.opcion_3
+            }
+
+            // Ahora puedes usar triviaQuestion para obtener los datos
+            QuestionCard(
+                questionNumber = triviaQuestion.id_pregunta,
+                questionText = triviaQuestion.texto_pregunta,
+                options = opciones,
+                correctOptionIndex = triviaQuestion.respuesta_correcta,
+                imageResource = R.drawable.dinosaur_image, // Asegúrate de que esta imagen sea relevante
+                onAnswer = { userAnswer ->
+                    // Procesar la respuesta
+                },
+                onNextQuestion = {
+                    navController.popBackStack() // Avanzar a la siguiente pregunta
+                }
+            )
+        }
+
 
         // Pantalla de Insignias
         composable("insignias") {

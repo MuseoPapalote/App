@@ -35,6 +35,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+        freeCompilerArgs += "-Xuse-ir"
     }
     buildFeatures {
         compose = true
@@ -50,6 +51,9 @@ android {
 }
 
 dependencies {
+    implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
+
+
     // Google Auth
     implementation ("androidx.core:core-ktx:1.15.0")
     implementation ("androidx.appcompat:appcompat:1.4.0")

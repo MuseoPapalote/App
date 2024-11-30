@@ -1,5 +1,6 @@
 package com.example.papalote.ui.theme.pages
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,12 +24,18 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.papalote.R
+import com.example.papalote.TriviaAnswersListType
+import com.example.papalote.TriviaQuestion
+import com.example.papalote.states.TriviaQuestionState
 import com.example.papalote.states.ZoneStatsState
 import com.example.papalote.ui.theme.components.CustomBottomBar
 import com.example.papalote.utils.LanguageManager
 import com.example.papalote.utils.TokenManager
+import com.example.papalote.viewModel.TriviaViewModel
 import com.example.papalote.viewModel.ZoneStatsViewModel
 import com.example.papalote.zoneResponse
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 @Composable
 fun ZoneDetailScreen(
@@ -37,20 +44,24 @@ fun ZoneDetailScreen(
     navController: NavHostController,
     onMedalClick: () -> Unit,
     tokenManager: TokenManager,
-    viewModel: ZoneStatsViewModel = viewModel()
+    viewModel: ZoneStatsViewModel = viewModel(),
+    viewModel2: TriviaViewModel = viewModel(),
+    onActivityClick: (TriviaQuestion) -> Unit
 ) {
 
     val zoneStatsState by viewModel.zoneState.collectAsState()
+    val triviaSate by viewModel2.triviaQuestionState.collectAsState()
 
     LaunchedEffect(zoneStatsState) {
         if (zoneStatsState is ZoneStatsState.Idle) {
             println("Llamando a fetchZoneStats desde ZoneDetailScreen...")
+            viewModel2.obtenerPreguntasPorZona(zoneName)
             viewModel.fetchZoneStats(zoneName)
         }
     }
 
-    when(zoneStatsState){
-        is ZoneStatsState.Loading -> {
+    when {
+        zoneStatsState is ZoneStatsState.Loading -> {
             println("Estado actual: Loading")
             Box(
                 modifier = Modifier
@@ -61,9 +72,12 @@ fun ZoneDetailScreen(
                 Text(text = "Cargando...", fontSize = 20.sp, color = Color.White)
             }
         }
-        is ZoneStatsState.Success ->{
+
+        zoneStatsState is ZoneStatsState.Success && triviaSate is TriviaQuestionState.Success -> {
             println("Estado actual: Success")
             val zoneStats = (zoneStatsState as ZoneStatsState.Success).zoneStats
+            val trivias = (triviaSate as TriviaQuestionState.Success).preguntas
+            println("Preguntas: $trivias")
             println("Mostrando datos de la zona: $zoneStats")
             Scaffold(
                 bottomBar = {
@@ -84,15 +98,15 @@ fun ZoneDetailScreen(
                         HeaderWithLogo()
                         Header(zoneName = zoneName)
 
-                        ActivitiesSection(zoneStats = zoneStats!! ,navController = navController, zoneName = zoneName)
+                        ActivitiesSection(zoneStats = zoneStats!!, navController = navController, zoneName = zoneName, activities = trivias!!)
 
                         MedalSection(zoneName = zoneName, onMedalClick = onMedalClick)
                     }
                 }
             }
-
         }
-        is ZoneStatsState.Error -> {
+
+        zoneStatsState is ZoneStatsState.Error -> {
             println("Estado actual: Error")
             val errorMessage = (zoneStatsState as ZoneStatsState.Error).message
             println("Error: $errorMessage")
@@ -101,24 +115,23 @@ fun ZoneDetailScreen(
                     .fillMaxSize()
                     .background(Color(0xFFD6E800)),
                 contentAlignment = Alignment.Center
-            ){
+            ) {
                 Text(text = "Error: $errorMessage", fontSize = 20.sp, color = Color.White)
             }
         }
-        is ZoneStatsState.Idle -> {
+
+        zoneStatsState is ZoneStatsState.Idle -> {
             println("Estado actual: Idle")
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Color(0xFFD6E800)),
                 contentAlignment = Alignment.Center
-            ){
+            ) {
                 Text(text = "Estado Idle", fontSize = 20.sp, color = Color.White)
             }
         }
     }
-
-
 }
 
 @Composable
@@ -176,12 +189,20 @@ fun Header(zoneName: String) {
 }
 
 @Composable
-fun ActivitiesSection(zoneStats:zoneResponse, navController: NavHostController, zoneName: String) {
+fun ActivitiesSection(
+    zoneStats:zoneResponse,
+    navController: NavHostController,
+    zoneName: String,
+    activities: List<TriviaQuestion>
+) {
 
     // Definir los textos según el idioma seleccionado
     val activity1Text = if (LanguageManager.language == "es") "Actividad 1" else "Activity 1"
     val activity2Text = if (LanguageManager.language == "es") "Actividad 2" else "Activity 2"
     val activity3Text = if (LanguageManager.language == "es") "Actividad 3" else "Activity 3"
+    val randomQuestion = activities.random()
+    val questionText = randomQuestion.texto_pregunta
+    val triviaJson = Json.encodeToString(randomQuestion)
 
     Column(
         modifier = Modifier
@@ -207,6 +228,13 @@ fun ActivitiesSection(zoneStats:zoneResponse, navController: NavHostController, 
             icon = painterResource(id = R.drawable.calendario),
             text = if (zoneStats.visitas.isNotEmpty()) "Ultima visita: "+zoneStats.visitas[0].nombre_exposicion else "activity1Text",
             onClick = { navController.navigate("dinosaur/$zoneName") }
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        ActivityCard(
+            color = Color(0xFF55A8E2),
+            icon = painterResource(id = R.drawable.calendario),
+            text = "Pregunta Diaria: $questionText",
+            onClick = {navController.navigate("questionCard/$triviaJson")}
         )
     }
 }
